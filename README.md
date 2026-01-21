@@ -1,4 +1,4 @@
-## Helper functions for microbiome research. 
+## Helper functions for microbiome bioinformatics. 
 
 This package in development contains functions to:
 
