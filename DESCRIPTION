@@ -18,14 +18,18 @@ Description: This package contains multiple helper functions for processing
 License: None
 Encoding: UTF-8
 LazyData: true
-Imports: Biostrings,
-          ShortRead,
+Imports:  Biostrings,
+          DESeq2,
+          doParallel,
           dplyr,
-          tibble,
-          tidyr,
+          foreach,
+          ggh4x,
           ggplot2,
           magrittr,
           patchwork,
-          doParallel,
-          foreach
+          RColorBrewer,
+          ShortRead,
+          tibble,
+          tidyr,
+          vegan
 RoxygenNote: 7.3.2

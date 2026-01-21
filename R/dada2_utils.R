@@ -224,6 +224,16 @@ plot_track_change <- function(track_change) {
 }
 
 
+#' Export ASVs as fasta
+#' @param seqtab matrix sequence table with samples as rows
+#' @param path.out path where to save fasta
+#' @export
+asv_to_fasta <- function(seqtab, path.out) {
+  seqs <- colnames(seqtab)
+  fasta <- Biostrings::DNAStringSet(seqs)
+  names(fasta) <- paste0("ASV_", seq_along(seqs))
+  Biostrings::writeXStringSet(fasta, path.out)
+}
 
 
 
