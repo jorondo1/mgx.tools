@@ -1,5 +1,5 @@
 #' stolen from https://github.com/Russel88/MicEco/blob/master/R/rcurve.R
-#' minor adjustments to trnsform otu as matrix
+#' minor adjustments to transform otu as matrix
 #' @export
 rcurve <- function (physeq, subsamp = 10^c(1:5), trim = TRUE, add_sample_data = TRUE)
 {

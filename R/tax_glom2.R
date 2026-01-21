@@ -24,11 +24,11 @@
 
 #' 2. with more and more MAGs being added to public databases, there are
 #' instances where an organism will have a species-level label, but no genus or
-#' family. An example :  Clostridia bacterium UC5.1-1E11 only has a class-level
+#' family. An example : Clostridia bacterium UC5.1-1E11 only has a class-level
 #' classification; thus Order, Family, and Genus will all be NA. So keeping my
 #' previous modification to tax_glom in mind, agglomeration at the genus level
 #' will pool ALL read counts of NA genera together, regardless of their higher
-#' taxonomy. Since these genomes have not been classified at these levels (all
+#' taxonomy. Since these genomes have not been classified at these levels, all
 #' one can say is that it's a "species" of the class Clostridia, probably because
 #' marker genes from that clade were found in that genome; and that it is different
 #' enough from all other known clostridia genomes so that we know it's an unknown
