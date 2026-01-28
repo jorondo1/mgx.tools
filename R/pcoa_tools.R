@@ -22,6 +22,7 @@ vst_ps_to_mx <- function(ps) {
 #' @param vst default FALSE, whether to use variance-stabilizing transformation
 #' @export
 compute_pcoa <- function(ps, dist,
+                         all_coordinates = FALSE, # adds a table with all coordinates
                          vst = FALSE # add variance-stabilizing transformation
 ) {
 
@@ -49,15 +50,20 @@ compute_pcoa <- function(ps, dist,
       vegan::vegdist(method = dist)
   }
 
-  PCoA <- vegan::capscale(dist.mx~1, distance = dist)
-  eig <- round(PCoA$CA$eig[1:3]/sum(PCoA$CA$eig),2)
-  message(paste("First 3 PCo :",eig[1], ',', eig[2], ',', eig[3]))
+  PCoA <- vegan::cmdscale(dist.mx, distance = dist, k = nrow(dist.mx)-1)
+  eig <- round(PCoA$eig[1:3]/sum(PCoA$eig),2)
+  message(paste("Variance explained by first PCo's:",eig[1], ',', eig[2], ',', eig[3]))
   # create output list
   out <- data.frame(sample_data(ps))
-  out$PCo1 <- vegan::scores(PCoA)$sites[,1]
-  out$PCo2 <- vegan::scores(PCoA)$sites[,2]
+  out$PCo1 <- PCoA$points[,1]
+  out$PCo2 <- PCoA$points[,2]
 
-  list(metadata = out, eig = PCoA$CA$eig, dist.mx = dist.mx)
+  out <- list(metadata = out, eig = PCoA$CA$eig, dist.mx = dist.mx)
+
+  if(all_coordinates){
+    out[['coordinates']] <- PCoA$points
+  }
+  return(out)
 }
 
 
