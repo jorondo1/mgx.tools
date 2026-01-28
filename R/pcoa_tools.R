@@ -50,7 +50,7 @@ compute_pcoa <- function(ps, dist,
       vegan::vegdist(method = dist)
   }
 
-  PCoA <- vegan::cmdscale(dist.mx, distance = dist, k = nrow(dist.mx)-1)
+  PCoA <- cmdscale(dist.mx, distance = dist, k = nrow(dist.mx)-1)
   eig <- round(PCoA$eig[1:3]/sum(PCoA$eig),2)
   message(paste("Variance explained by first PCo's:",eig[1], ',', eig[2], ',', eig[3]))
   # create output list
