@@ -20,6 +20,7 @@ vst_ps_to_mx <- function(ps) {
 #' @param ps phyloseq object
 #' @param dist distance name (choose from vegan)
 #' @param vst default FALSE, whether to use variance-stabilizing transformation
+#' @param all_coordinates default FALSE; whether to include a table with all coordinates instead of just adding the first 2 to the sample_data table
 #' @export
 compute_pcoa <- function(ps, dist,
                          all_coordinates = FALSE, # adds a table with all coordinates
