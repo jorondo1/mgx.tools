@@ -26,6 +26,8 @@ compute_pcoa <- function(ps, dist,
                          vst = FALSE # add variance-stabilizing transformation
 ) {
 
+  seqtab <- phyloseq::otu_table(ps)
+
   # Validate distance
   unifrac_names <- c("unifrac.u","unifrac.w")
   dist_list <- c(unifrac_names,"manhattan", "euclidean", "canberra", "clark", "bray", "kulczynski", "jaccard", "gower", "altGower", "morisita", "horn", "mountford", "raup", "binomial", "chao", "cao", "mahalanobis", "chisq", "chord", "hellinger", "aitchison", "robust.aitchison")
@@ -40,17 +42,23 @@ compute_pcoa <- function(ps, dist,
 
   dist.mx <- if (dist == 'unifrac.w') {
     phyloseq::UniFrac(ps, weighted = TRUE, parallel = TRUE)
+
   } else if (dist == 'unifrac.u') {
     phyloseq::UniFrac(ps, weighted = FALSE, parallel = TRUE)
+
   } else {
     ps %>%
-      { counts <- if (vst) vst_ps_to_mx(.) else phyloseq::otu_table(.)
+      { counts <- if (vst) vst_ps_to_mx(.) else seqtab
       if (phyloseq::taxa_are_rows(ps) & !vst) t(counts) else counts
       } %>%
       vegan::vegdist(method = dist)
   }
 
-  PCoA <- cmdscale(dist.mx, distance = dist, k = nrow(dist.mx)-1)
+  num_k <- if(taxa_are_rows(seqtab)){
+    ncol(seqtab) - 1
+  } else {nrow(seqtab) - 1}
+
+  PCoA <- cmdscale(dist.mx, k = num_k, eig = TRUE)
   eig <- round(PCoA$eig[1:3]/sum(PCoA$eig),2)
   message(paste("Variance explained by first PCo's:",eig[1], ',', eig[2], ',', eig[3]))
   # create output list
