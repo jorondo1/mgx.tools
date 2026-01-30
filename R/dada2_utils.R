@@ -25,6 +25,11 @@
 
 
 #' Compute primer occurence across all orientations
+#' @param fnFs Forward read files
+#' @param fnRs Reverse read files
+#' @param FWD Forward primer sequence
+#' @param REV Reverse primer sequence
+#' @param ncores Number of cores to use (default: detectCores() - 1)
 #' @export
 primer_occurence <- function(fnFs, fnRs, FWD, REV, ncores = NULL){
 
