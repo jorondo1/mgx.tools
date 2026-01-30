@@ -26,13 +26,31 @@
 
 #' Compute primer occurence across all orientations
 #' @export
-primer_occurence <- function(fnFs, fnRs, FWD, REV){
+primer_occurence <- function(fnFs, fnRs, FWD, REV, ncores = NULL){
+
+  # Set up parallel processing
+  if (is.null(ncores)) {
+    ncores <- max(1, parallel::detectCores() - 1)
+  }
+
+  future::plan(future::multisession, workers = ncores)
+  on.exit(future::plan(future::sequential), add = TRUE)
+
+  # Get all primer orientations
   FWD.orients <- .allOrients(FWD)
   REV.orients <- .allOrients(REV)
-  rbind(FWD.ForwardReads = sapply(FWD.orients, .primerHits, fn = fnFs[[1]]),
-        FWD.ReverseReads = sapply(FWD.orients, .primerHits, fn = fnRs[[1]]),
-        REV.ForwardReads = sapply(REV.orients, .primerHits, fn = fnFs[[1]]),
-        REV.ReverseReads = sapply(REV.orients, .primerHits, fn = fnRs[[1]]))
+
+  # Parallel computation
+  FWD.ForwardReads <- future.apply::future_sapply(FWD.orients, .primerHits, fn = fnFs[[1]])
+  FWD.ReverseReads <- future.apply::future_sapply(FWD.orients, .primerHits, fn = fnRs[[1]])
+  REV.ForwardReads <- future.apply::future_sapply(REV.orients, .primerHits, fn = fnFs[[1]])
+  REV.ReverseReads <- future.apply::future_sapply(REV.orients, .primerHits, fn = fnRs[[1]])
+
+  # Return results
+  rbind(FWD.ForwardReads = FWD.ForwardReads,
+        FWD.ReverseReads = FWD.ReverseReads,
+        REV.ForwardReads = REV.ForwardReads,
+        REV.ReverseReads = REV.ReverseReads)
 }
 
 #' CUTADAPT wrapper function

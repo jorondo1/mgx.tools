@@ -75,7 +75,6 @@ compute_pcoa <- function(ps, dist,
   return(out)
 }
 
-
 #' Pivot a dist object to a long dataframe
 #' Possible to use only a subset of samples, provided their name
 #' @param dist.mx distance matrix (dist object from vegan::)
