@@ -33,23 +33,37 @@
 #' @export
 primer_occurence <- function(fnFs, fnRs, FWD, REV, ncores = NULL){
 
-  # Set up parallel processing
   if (is.null(ncores)) {
     ncores <- max(1, parallel::detectCores() - 1)
   }
-
-  future::plan(future::multisession, workers = ncores)
-  on.exit(future::plan(future::sequential), add = TRUE)
 
   # Get all primer orientations
   FWD.orients <- .allOrients(FWD)
   REV.orients <- .allOrients(REV)
 
-  # Parallel computation
-  FWD.ForwardReads <- future.apply::future_sapply(FWD.orients, .primerHits, fn = fnFs[[1]])
-  FWD.ReverseReads <- future.apply::future_sapply(FWD.orients, .primerHits, fn = fnRs[[1]])
-  REV.ForwardReads <- future.apply::future_sapply(REV.orients, .primerHits, fn = fnFs[[1]])
-  REV.ReverseReads <- future.apply::future_sapply(REV.orients, .primerHits, fn = fnRs[[1]])
+  # Use mclapply (fork-based, more reliable on Linux)
+  FWD.ForwardReads <- parallel::mclapply(
+    FWD.orients, .primerHits, fn = fnFs[[1]],
+    mc.cores = ncores
+  )
+  FWD.ReverseReads <- parallel::mclapply(
+    FWD.orients, .primerHits, fn = fnRs[[1]],
+    mc.cores = ncores
+  )
+  REV.ForwardReads <- parallel::mclapply(
+    REV.orients, .primerHits, fn = fnFs[[1]],
+    mc.cores = ncores
+  )
+  REV.ReverseReads <- parallel::mclapply(
+    REV.orients, .primerHits, fn = fnRs[[1]],
+    mc.cores = ncores
+  )
+
+  # Convert lists to named vectors
+  FWD.ForwardReads <- setNames(unlist(FWD.ForwardReads), names(FWD.orients))
+  FWD.ReverseReads <- setNames(unlist(FWD.ReverseReads), names(FWD.orients))
+  REV.ForwardReads <- setNames(unlist(REV.ForwardReads), names(REV.orients))
+  REV.ReverseReads <- setNames(unlist(REV.ReverseReads), names(REV.orients))
 
   # Return results
   rbind(FWD.ForwardReads = FWD.ForwardReads,
