@@ -219,26 +219,40 @@ track_dada <- function(out.N, out, sample.names,
   tibble_out <- data.frame(track) %>%
     tibble::rownames_to_column('Sample') %>%
     tibble::tibble() %>%
-    dplyr::mutate(Nfilt_lost = (input-removeNs)/input,
-                  filterAndTrim_lost = (removeNs-filtered)/removeNs,
-                  denoising_lost = (filtered-denoisedF)/filtered,
-                  merging_lost = (denoisedF-raw_seqtab)/denoisedF, # Proportion of reads lost to merging
-                  bimera_lost = (raw_seqtab-nonchim)/raw_seqtab) %>%
-    tidyr::pivot_longer(where(is.numeric), names_to = 'variable', values_to = 'values')
+    dplyr::mutate(
+      Nfilt_lost = (input-removeNs)/input,
+      filterAndTrim_lost = (removeNs-filtered)/removeNs,
+      denoising_lost_F = (filtered-denoisedF)/filtered,
+      denoising_lost_R = (filtered-denoisedR)/filtered,
+      merging_lost_F = (denoisedF-raw_seqtab)/denoisedF, # Proportion of reads lost to merging
+      merging_lost_R = (denoisedR-raw_seqtab)/denoisedR,
+      bimera_lost = (raw_seqtab-nonchim)/raw_seqtab) %>%
+    tidyr::pivot_longer(
+      where(is.numeric),
+      names_to = 'variable',
+      values_to = 'values')
 
   list(
-    counts_per_step = tibble_out %>% filter(!str_detect(variable, '_lost')),
-    lost_per_step = tibble_out %>% filter(str_detect(variable, '_lost'))
+    counts_per_step = tibble_out %>%
+      filter(!str_detect(variable, '_lost')),
+    lost_per_step = tibble_out %>%
+      filter(str_detect(variable, '_lost'))
   )
 }
 
 
 #' Plot track changes
 #' @export
-plot_track_change <- function(track_change) {
+plot_track_change <- function(track_change, reverse = FALSE) {
 
+  counts_levels <- if(reverse){
+    c("input", "removeNs", "filtered", "denoisedR", "raw_seqtab", "nonchim")
+  } else {
+    c("input", "removeNs", "filtered", "denoisedF", "raw_seqtab", "nonchim")
+  }
   p1 <- track_change[['counts_per_step']] %>%
-    dplyr::mutate(variable = factor(variable, levels = c("input", "removeNs", "filtered", "denoisedF", "raw_seqtab", "nonchim"))) %>%
+    filter(variable %in% count_levels) %>%
+    dplyr::mutate(variable = factor(variable, levels = counts_levels)) %>%
     ggplot2::ggplot(aes(x = variable, y = values)) +
     ggplot2::geom_line(aes(group = Sample), linewidth = 0.1) +
     ggrain::geom_rain() +
@@ -246,14 +260,19 @@ plot_track_change <- function(track_change) {
       title = 'Read counts across main DADA2 pipeline steps.',
       x = "", y = 'Sequence count')
 
+  lost_levels <- if(reverse){
+    c('bimera_lost', 'merging_lost_R', 'denoising_lost_R', 'filterAndTrim_lost', 'Nfilt_lost')
+  } else {
+    c('bimera_lost', 'merging_lost_F', 'denoising_lost_F', 'filterAndTrim_lost', 'Nfilt_lost')
+  }
   p2 <- track_change[['lost_per_step']] %>%
-    dplyr::mutate(variable = factor(variable, level = c('bimera_lost', 'merging_lost', 'denoising_lost', 'filterAndTrim_lost', 'Nfilt_lost'))) %>%
+    filter(variable %in% lost_levels) %>%
+    dplyr::mutate(variable = factor(variable,level = lost_levels)) %>%
     ggplot2::ggplot(aes(y = variable, x = values)) +
     ggplot2::geom_jitter(height = 0.2, width =0) +
     ggplot2::labs(
       title = 'Proportion of reads lost at a specific pipeline step.',
-      x = "Proportion reads lost",
-      y = "") +
+      x = "Proportion reads lost", y = "") +
     xlim(0,1)
 
   p1/p2 &
