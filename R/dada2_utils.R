@@ -245,13 +245,13 @@ track_dada <- function(out.N, out, sample.names,
 #' @export
 plot_track_change <- function(track_change, reverse = FALSE) {
 
-  counts_levels <- if(reverse){
-    c("input", "removeNs", "filtered", "denoisedR", "raw_seqtab", "nonchim")
+  if(reverse){
+    counts_levels <- c("input", "removeNs", "filtered", "denoisedR", "raw_seqtab", "nonchim")
   } else {
-    c("input", "removeNs", "filtered", "denoisedF", "raw_seqtab", "nonchim")
+    counts_levels <- c("input", "removeNs", "filtered", "denoisedF", "raw_seqtab", "nonchim")
   }
   p1 <- track_change[['counts_per_step']] %>%
-    filter(variable %in% count_levels) %>%
+    filter(variable %in% counts_levels) %>%
     dplyr::mutate(variable = factor(variable, levels = counts_levels)) %>%
     ggplot2::ggplot(aes(x = variable, y = values)) +
     ggplot2::geom_line(aes(group = Sample), linewidth = 0.1) +
@@ -260,10 +260,10 @@ plot_track_change <- function(track_change, reverse = FALSE) {
       title = 'Read counts across main DADA2 pipeline steps.',
       x = "", y = 'Sequence count')
 
-  lost_levels <- if(reverse){
-    c('bimera_lost', 'merging_lost_R', 'denoising_lost_R', 'filterAndTrim_lost', 'Nfilt_lost')
+  if(reverse){
+    lost_levels <- c('bimera_lost', 'merging_lost_R', 'denoising_lost_R', 'filterAndTrim_lost', 'Nfilt_lost')
   } else {
-    c('bimera_lost', 'merging_lost_F', 'denoising_lost_F', 'filterAndTrim_lost', 'Nfilt_lost')
+    lost_levels <- c('bimera_lost', 'merging_lost_F', 'denoising_lost_F', 'filterAndTrim_lost', 'Nfilt_lost')
   }
   p2 <- track_change[['lost_per_step']] %>%
     filter(variable %in% lost_levels) %>%
