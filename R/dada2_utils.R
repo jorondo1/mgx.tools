@@ -121,7 +121,6 @@ dropped_samples <- function(path_list) {
 
 #' Report chimera rate and reads
 #' @export
-
 chimera_report <- function(seqtab, seqtab.nochim) {
   ASV1 <- ncol(seqtab)
   ASV2 <- ncol(seqtab.nochim)
@@ -129,8 +128,10 @@ chimera_report <- function(seqtab, seqtab.nochim) {
   SEQ2 <- sum(seqtab.nochim)
   chim <- ASV1-ASV2
   seqloss <- round(100*(SEQ1-SEQ2)/SEQ1,2)
-  message(paste(chim, "chimeras were found out of", ASV1, "ASVs."))
-  message(paste(seqloss,"% of sequences were lost."))
+
+  cat(paste(chim, "chimeras were found out of", ASV1, "ASVs.\n"))
+  cat(paste(ASV2, "non-chimeric ASVs left.\n"))
+  cat(paste(seqloss,"% of sequences were lost.\n"))
 }
 
 
