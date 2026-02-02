@@ -67,7 +67,7 @@ compute_pcoa <- function(ps, dist,
   out$PCo1 <- PCoA$points[,1]
   out$PCo2 <- PCoA$points[,2]
 
-  out <- list(metadata = out, eig = PCoA$CA$eig, dist.mx = dist.mx)
+  out <- list(metadata = out, eig = PCoA$eig, dist.mx = dist.mx)
 
   if(all_coordinates){
     out[['coordinates']] <- PCoA$points
