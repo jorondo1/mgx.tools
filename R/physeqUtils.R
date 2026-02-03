@@ -31,7 +31,7 @@ subset_tax_table <- function(taxonomy, seqtab, min_seq) {
   )
 
   message(paste(length(keep)-length(taxa), 'taxa were removed'))
-  message(paste('Of these,',length(taxa_phylum),'were unclassified at the Phylum level'))
+  message(paste('Of these,',length(keep)-length(taxa_phylum),'were unclassified at the Phylum level'))
   message('Consider using remove_ultra_rare() next.')
   as.matrix(taxonomy[taxa, ])
 }
