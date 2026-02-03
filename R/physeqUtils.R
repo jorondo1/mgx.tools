@@ -25,10 +25,10 @@ subset_tax_table <- function(taxonomy, seqtab, min_seq) {
   keep <- colSums(seqtab) >= min_seq
   taxa_phylum <- subset(taxonomy, Phylum != "Unclassified") %>% # subset needs the input to be a df
     rownames()
-  taxa <- taxa_phylum %>%
-    intersect(
-      colnames(seqtab)[keep] # only keep taxa still present in seqtab
-    )
+  taxa <- intersect(
+    taxa_phylum,
+    colnames(seqtab)[keep] # only keep taxa still present in seqtab
+  )
 
   message(paste(length(keep)-length(taxa), 'taxa were removed'))
   message(paste('Of these,',length(taxa_phylum),'were unclassified at the Phylum level'))
