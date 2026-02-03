@@ -23,13 +23,13 @@ subset_tax_table <- function(taxonomy, seqtab, min_seq) {
   }
 
   keep <- colSums(seqtab) >= min_seq
-  taxa <- subset(taxonomy, Phylum != "Unclassified") %>% # subset needs the input to be a df
+  taxa <- dplyr::filter(taxonomy, Phylum != "Unclassified") %>% # subset needs the input to be a df
     rownames() %>%
     intersect(
       colnames(seqtab)[keep] # only keep taxa still present in seqtab
     )
 
-  message(paste(nrow(taxa)-length(keep), 'taxa were removed.'))
+  message(paste(length(keep)-length(taxa), 'taxa were removed.'))
   message('Consider using remove_ultra_rare() next.')
   as.matrix(taxonomy[taxa, ])
 }
