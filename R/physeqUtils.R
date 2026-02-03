@@ -29,7 +29,7 @@ subset_tax_table <- function(taxonomy, seqtab, min_seq) {
       colnames(seqtab)[keep] # only keep taxa still present in seqtab
     )
 
-  message(paste(ncol(seqtab)-length(keep), 'taxa were removed.'))
+  message(paste(nrow(taxa)-length(keep), 'taxa were removed.'))
   message('Consider using remove_ultra_rare() next.')
   as.matrix(taxonomy[taxa, ])
 }
