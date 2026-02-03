@@ -23,7 +23,7 @@ subset_tax_table <- function(taxonomy, seqtab, min_seq) {
   }
 
   keep <- colSums(seqtab) >= min_seq
-  taxa <- dplyr::filter(taxonomy, Phylum != "Unclassified") %>% # subset needs the input to be a df
+  taxa <- subset(taxonomy, Phylum != "Unclassified") %>% # subset needs the input to be a df
     rownames() %>%
     intersect(
       colnames(seqtab)[keep] # only keep taxa still present in seqtab
