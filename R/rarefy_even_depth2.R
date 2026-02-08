@@ -5,7 +5,7 @@
 #' @export
 rarefy_even_depth2 <- function (
     physeq, sample.size = min(phyloseq::sample_sums(physeq)), rngseed = FALSE,
-    replace = TRUE, trimOTUs = TRUE, verbose = TRUE, ncores = parallel::detectCores()-1
+    replace = TRUE, trimOTUs = TRUE, verbose = FALSE, ncores = parallel::detectCores()-1
 )
 {
   # Check for required packages for parallel processing

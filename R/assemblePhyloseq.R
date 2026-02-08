@@ -15,8 +15,9 @@ assemble_phyloseq <- function(
     min_taxa_count = 1,
     unique_taxa_ID = 'Species',
     filtering = FALSE,
-    justBacteria = FALSE
-    ) {
+    justBacteria = FALSE,
+    seqdepth_plot = TRUE
+) {
 
   # Check formats
   if(tibble::is_tibble(sampleData)) {
@@ -44,9 +45,10 @@ assemble_phyloseq <- function(
     dplyr::filter(rowSums(dplyr::select(., where(is.numeric))) >= min_taxa_count)
 
   # Visualise sequence depth per sample
-  abund_t <- as.data.frame(abund) %>% t()
-  viz_seqdepth(abund_t, log_count = FALSE)
-
+  if(seqdepth_plot){
+    abund_t <- as.data.frame(abund) %>% t()
+    viz_seqdepth(abund_t, log_count = FALSE)
+  }
   # Extract taxonomy
   tax <- abunTable %>%
     dplyr::select(where(is.character)) %>%
