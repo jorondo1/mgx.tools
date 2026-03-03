@@ -2,8 +2,7 @@
 % Please edit documentation in R/rarefy_even_depth2.R
 \name{rarefy_even_depth2}
 \alias{rarefy_even_depth2}
-\title{Paralellize phyloseq's rarefaction function
-Shamelessly stolen and fed to Gemini}
+\title{Parallelize phyloseq's rarefaction function with reproducible results}
 \usage{
 rarefy_even_depth2(
   physeq,
@@ -12,10 +11,9 @@ rarefy_even_depth2(
   replace = TRUE,
   trimOTUs = TRUE,
   verbose = FALSE,
-  ncores = detectCores() - 1
+  ncores = parallel::detectCores() - 1
 )
 }
 \description{
-Paralellize phyloseq's rarefaction function
-Shamelessly stolen and fed to Gemini
+Parallelize phyloseq's rarefaction function with reproducible results
 }

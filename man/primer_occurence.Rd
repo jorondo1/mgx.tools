@@ -4,7 +4,18 @@
 \alias{primer_occurence}
 \title{Compute primer occurence across all orientations}
 \usage{
-primer_occurence(fnFs, fnRs, FWD, REV)
+primer_occurence(fnFs, fnRs, FWD, REV, ncores = NULL)
+}
+\arguments{
+\item{fnFs}{Forward read files}
+
+\item{fnRs}{Reverse read files}
+
+\item{FWD}{Forward primer sequence}
+
+\item{REV}{Reverse primer sequence}
+
+\item{ncores}{Number of cores to use (default: detectCores() - 1)}
 }
 \description{
 Compute primer occurence across all orientations

@@ -1,7 +1,7 @@
 #' Parallelize phyloseq's rarefaction function with reproducible results
 #' @import foreach
 #' @importFrom doParallel registerDoParallel
-#' @importFrom doRNG %dorng%
+#' @importFrom doRNG %doRNG%
 #' @export
 rarefy_even_depth2 <- function (
     physeq, sample.size = min(phyloseq::sample_sums(physeq)), rngseed = FALSE,

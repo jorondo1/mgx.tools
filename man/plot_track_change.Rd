@@ -4,7 +4,7 @@
 \alias{plot_track_change}
 \title{Plot track changes}
 \usage{
-plot_track_change(track_change)
+plot_track_change(track_change, reverse = FALSE)
 }
 \description{
 Plot track changes
