@@ -6,6 +6,11 @@
 \usage{
 rarecurve_to_df(rare_output, ps_object)
 }
+\arguments{
+\item{rare_output}{rarefaction output}
+
+\item{ps_object}{a phyloseq object}
+}
 \description{
 convert rarecurve output to data frame
 }

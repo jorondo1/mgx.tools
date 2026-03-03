@@ -7,6 +7,9 @@ stolen from DADA2 tutorial https://benjjneb.github.io/dada2/tutorial.html}
 \usage{
 .allOrients(primer)
 }
+\arguments{
+\item{primer}{primer sequence as string}
+}
 \description{
 Find all orientation of primers in the data
 stolen from DADA2 tutorial https://benjjneb.github.io/dada2/tutorial.html

@@ -19,6 +19,9 @@ rarecurve_parallel(
   ...
 )
 }
+\arguments{
+\item{x}{count table with sample as rownames and taxa as colnames}
+}
 \description{
 Paralellized version of vegan::rarecurve()
 Shamelessly adapted by Gemini

@@ -7,6 +7,11 @@ Creates a Sample column with the sample names}
 \usage{
 samdat_as_tibble(ps, strings_as_factors = TRUE)
 }
+\arguments{
+\item{ps}{a phyloseq object}
+
+\item{strings_as_factors}{convert strings to factors}
+}
 \description{
 1. Get a phyloseq object's sample data as tibble
 Creates a Sample column with the sample names

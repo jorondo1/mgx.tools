@@ -1,6 +1,6 @@
 #' Find all orientation of primers in the data
 #' stolen from DADA2 tutorial https://benjjneb.github.io/dada2/tutorial.html
-#' @params primer primer sequence as string
+#' @param primer primer sequence as string
 #' @keywords internal
 .allOrients <- function(primer) {
   # Create all orientations of the input sequence

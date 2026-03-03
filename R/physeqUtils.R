@@ -79,8 +79,8 @@ viz_seqdepth <- function(seqtab, breaks = 100, log_count = FALSE) {
 
 #' 1. Get a phyloseq object's sample data as tibble
 #' Creates a Sample column with the sample names
-#' @params ps a phyloseq object
-#' @params strings_as_factors convert strings to factors
+#' @param ps a phyloseq object
+#' @param strings_as_factors convert strings to factors
 #' @export
 samdat_as_tibble <- function(ps, strings_as_factors = TRUE){
   phyloseq::sample_data(ps) %>%

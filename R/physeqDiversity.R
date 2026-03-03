@@ -2,8 +2,8 @@
 #'
 
 #' Hill numbers
-#' @params ps phyloseq object
-#' @params q Hill number order q (i-e 0, 1 or 2)
+#' @param ps phyloseq object
+#' @param q Hill number order q (i-e 0, 1 or 2)
 #' @export
 estimate_Hill <- function(ps, q) {
   x <- phyloseq::otu_table(ps) %>% as("matrix")
@@ -23,9 +23,9 @@ estimate_Hill <- function(ps, q) {
   return(div)
 }
 
-# Esitmate diversity (Shannon, Simpson, Tail)
-#' @params ps phyloseq object
-#' @params index Richness, Shannon, Simpson or Tail
+#' Esitmate diversity (Shannon, Simpson, Tail)
+#' @param ps phyloseq object
+#' @param index Richness, Shannon, Simpson or Tail
 #' @export
 estimate_diversity <- function(ps, index = 'Shannon') {
   x <- phyloseq::otu_table(ps) %>% as("matrix")
@@ -57,8 +57,8 @@ estimate_diversity <- function(ps, index = 'Shannon') {
 
 #' Compute Hill 0, 1 and 2, as well as Tail
 #' Returns a list
-#' @params ps phyloseq object
-#' @params idx a vector of index names
+#' @param ps phyloseq object
+#' @param idx a vector of index names
 #' @export
 div.fun <- function(ps, idx) {
   div_estimate <- list()

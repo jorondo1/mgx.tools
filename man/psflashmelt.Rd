@@ -9,6 +9,9 @@ Creates a much smaller table because it omits every row for which Abundance == 0
 \usage{
 psflashmelt(physeq)
 }
+\arguments{
+\item{physeq}{a phyloseq object}
+}
 \description{
 the original psmelt function, but optimized using data.table and dplyr syntax
 should be insanely faster than the original

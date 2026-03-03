@@ -1,7 +1,7 @@
 #' Parallelize phyloseq's rarefaction function with reproducible results
 #' @import foreach
 #' @importFrom doParallel registerDoParallel
-#' @importFrom doRNG %doRNG%
+#' @importFrom doRNG %dorng%
 #' @export
 rarefy_even_depth2 <- function (
     physeq, sample.size = min(phyloseq::sample_sums(physeq)), rngseed = FALSE,
@@ -59,7 +59,7 @@ rarefy_even_depth2 <- function (
   otu_tab <- as(phyloseq::otu_table(newsub), "matrix")
 
   # The parallel loop using `%dorng%` for reproducibility
-  rarefied_list <- foreach::foreach(i = 1:ncol(otu_tab)) %doRNG% {
+  rarefied_list <- foreach::foreach(i = 1:ncol(otu_tab)) %dorng% {
     # Each iteration of this loop is a task sent to a worker.
     # `%dorng%` ensures the RNG state is handled correctly.
     phyloseq:::rarefaction_subsample(otu_tab[, i], sample.size, replace)

@@ -6,6 +6,11 @@
 \usage{
 estimate_Hill(ps, q)
 }
+\arguments{
+\item{ps}{phyloseq object}
+
+\item{q}{Hill number order q (i-e 0, 1 or 2)}
+}
 \description{
 Hill numbers
 }

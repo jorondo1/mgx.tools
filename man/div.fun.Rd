@@ -7,6 +7,11 @@ Returns a list}
 \usage{
 div.fun(ps, idx)
 }
+\arguments{
+\item{ps}{phyloseq object}
+
+\item{idx}{a vector of index names}
+}
 \description{
 Compute Hill 0, 1 and 2, as well as Tail
 Returns a list

@@ -3,7 +3,7 @@
 #' shamelessly AI generated
 #' Creates a much smaller table because it omits every row for which Abundance == 0
 
-#' @params physeq a phyloseq object
+#' @param physeq a phyloseq object
 #' @export
 psflashmelt <- function(physeq) {
   if (!requireNamespace("data.table", quietly = TRUE)) {

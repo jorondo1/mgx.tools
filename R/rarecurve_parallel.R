@@ -1,6 +1,6 @@
 #' Paralellized version of vegan::rarecurve()
 #' Shamelessly adapted by Gemini
-#' @params x count table with sample as rownames and taxa as colnames
+#' @param x count table with sample as rownames and taxa as colnames
 #' @export
 rarecurve_parallel <- function (x, step = 1, sample, xlab = "Sample Size", ylab = "Species",
                                 label = TRUE, col, lty, tidy = FALSE, ncores = NULL, ...)
@@ -91,8 +91,8 @@ rarecurve_parallel <- function (x, step = 1, sample, xlab = "Sample Size", ylab 
 
 
 #' convert rarecurve output to data frame
-#' @params rare_output rarefaction output
-#' @params ps_object a phyloseq object
+#' @param rare_output rarefaction output
+#' @param ps_object a phyloseq object
 #' @export
 rarecurve_to_df <- function(rare_output, ps_object) {
   # Extract sample names
