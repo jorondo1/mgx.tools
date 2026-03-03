@@ -16,6 +16,7 @@ assemble_phyloseq <- function(
     unique_taxa_ID = 'Species',
     filtering = FALSE,
     justBacteria = FALSE,
+    onlySpecies = FALSE,
     seqdepth_plot = TRUE
 ) {
 
@@ -49,9 +50,14 @@ assemble_phyloseq <- function(
     abund_t <- as.data.frame(abund) %>% t()
     viz_seqdepth(abund_t, log_count = FALSE)
   }
+
   # Extract taxonomy
   tax <- abunTable %>%
-    dplyr::select(where(is.character)) %>%
+    { if (onlySpecies) {
+      dplyr::select(., !!sym(unique_taxa_ID))
+    } else {
+      dplyr::select(., where(is.character))
+    }} %>%
     unique() %>% # because of renaming above, some species will be duplicate
     dplyr::mutate(tmp = !!sym(unique_taxa_ID)) %>%
     tibble::column_to_rownames('tmp') %>%
