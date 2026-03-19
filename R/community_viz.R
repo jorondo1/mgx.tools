@@ -1,11 +1,11 @@
 #' find top N taxa and generate a tibble of taxa with Others category
 #' @export
 topTaxa <- function(psmelt, taxLvl, topN) {
-  psmelt %>%
-    group_by(!!sym(taxLvl)) %>% # group by tax level
-    filter(relAb != 'NaN') %>%
-    summarise(relAb = mean(relAb)) %>% # find top abundant taxa
-    arrange(desc(relAb)) %>%
+  psmelt |>
+    group_by(!!sym(taxLvl)) |> # group by tax level
+    filter(relAb != 'NaN') |>
+    summarise(relAb = mean(relAb)) |> # find top abundant taxa
+    arrange(desc(relAb)) |>
     mutate(aggTaxo = as.factor(case_when( # aggTaxo will become the plot legend
       row_number() <= topN ~ !!sym(taxLvl), #+++ We'll need to manually order the species!
       row_number() > topN ~ 'Others'))) # +1 to include the Others section!
@@ -29,13 +29,13 @@ gen_comm_plot_data <- function(
          paste(order_by_possible, collapse = ", "))
   }
   melted_ps %<>%
-    dplyr::group_by(Sample) %>%
+    dplyr::group_by(Sample) |>
     dplyr::mutate(relAb = Abundance / sum(Abundance))
 
   # Compute top taxa and create "Others" category
   (top_taxa <- topTaxa(melted_ps, taxRank, nTaxa))
 
-  top_taxa_lvls <- top_taxa %>%
+  top_taxa_lvls <- top_taxa |>
     dplyr::group_by(aggTaxo) %>%
     aggregate(relAb ~ aggTaxo, data = ., FUN = sum) %>%
     {
@@ -44,7 +44,7 @@ gen_comm_plot_data <- function(
       } else if (order_by == 'abundance') {
         dplyr::arrange(., desc(relAb))
       }
-    } %$% aggTaxo %>%
+    } %$% aggTaxo |>
     as.character() %>% # Others first:
     setdiff(., c('Others', 'Unclassified')) %>% c('Others', 'Unclassified', .)
 

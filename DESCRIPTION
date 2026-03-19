@@ -15,24 +15,25 @@ Description: This package contains multiple helper functions for processing
     functions to allow them to use multiple cores when available, as well as
     short utility functions that help making informed decisions for data
     filtering and processing.
-License: None
+License: MIT + file LICENSE
 Encoding: UTF-8
-LazyData: true
 Imports: Biostrings,
           DESeq2,
           doParallel,
           doRNG,
           dplyr,
+          dada2,
           foreach,
-          future.apply,
-          future,
-          ggh4x,
           ggplot2,
+          ggrain,
           magrittr,
-          patchwork,
           parallel,
+          phyloseq,
+          purrr,
           RColorBrewer,
           ShortRead,
+          stringr,
+          SummarizedExperiment,
           tibble,
           tidyr,
           vegan
