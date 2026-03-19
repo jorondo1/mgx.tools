@@ -293,9 +293,60 @@ asv_to_fasta <- function(seqtab, path.out) {
 }
 
 
+#' Quality plotsà ----------------------------------------------------------
+#' Generate qplots
 
+#' @param Fs Forwards
+#' @param Rs Reverse
+#' @param nsam Number of plots to pick
+#' @export
+gen_qplots <- function(Fs, Rs, nsam = 4) {
 
+  message('This may take a few minutes...')
+  random_samples <- sample(length(Fs), size = nsam, replace = FALSE)
 
+  # Define plot tasks
+  tasks <- list(
+    list(name = "Fwd_samples", data = Fs[random_samples], agg = FALSE),
+    list(name = "Rev_samples", data = Rs[random_samples], agg = FALSE),
+    list(name = "Fwd_aggregated", data = Fs, agg = TRUE),
+    list(name = "Rev_aggregated", data = Rs, agg = TRUE)
+  )
+
+  # Generate plots in parallel
+  plot_list <- parallel::mclapply(tasks, function(task) {
+    if (tasks$agg) {
+      dada2::plotQualityProfile(task$data, 1e2, aggregate = TRUE)
+    } else {
+      dada2::plotQualityProfile(task$data, 1e5)
+    }
+  }, mc.cores = 4)
+
+  # Name the list
+  names(plot_list) <- sapply(tasks, `[[`, "name")
+
+  return(plot_list)
+}
+
+#' Export qplot
+#' @param plot_list output of gen_qplot
+#' @param out_dir save destination
+#' @param step_id identifier for the step (e.g. "raw_samples")
+#' @export
+save_qplots <- function(plot_list, out_dir, step_id){
+  # output dir
+  if(!dir.exists(out_dir)) dir.create(out_dir)
+
+  purrr::imap(plot_list, ~ {
+    filename <- file.path(out_dir, paste0(.y ,'_',gsub(" ", "_", step_id),'.pdf'))
+    ggplot2::ggsave(
+      plot = .x, filename = filename,
+      bg = 'white', width = 2400, height = 2400,
+      units = 'px', dpi = 180)
+    message('Saved: ', filename)
+  })
+  return(invisible(NULL))
+}
 
 
 
