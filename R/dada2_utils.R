@@ -315,10 +315,10 @@ gen_qplots <- function(Fs, Rs, nsam = 4) {
 
   # Generate plots in parallel
   plot_list <- parallel::mclapply(tasks, function(task) {
-    if (tasks$agg) {
-      dada2::plotQualityProfile(tasks$data, 1e2, aggregate = TRUE)
+    if (task$agg) {
+      dada2::plotQualityProfile(task$data, 1e2, aggregate = TRUE)
     } else {
-      dada2::plotQualityProfile(tasks$data, 1e5)
+      dada2::plotQualityProfile(task$data, 1e5)
     }
   }, mc.cores = 4)
 

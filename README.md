@@ -1,16 +1,53 @@
-## Helper functions for microbiome bioinformatics. 
 
-This package in development contains functions to:
+<!-- README.md is generated from README.Rmd. Please edit that file -->
 
-- Modularize the DADA2 pipeline, essentially wrapping up some steps into functions like `primer_occurence()`, `.allOrients()`; a wrapper function to run cutadapt to facilitate use with `mclapply()`; and cleaner ways to track reads and ASVs through the pipeline
-- Do postprocessing on ASV/sequence tables when finishing the DADA2 pipeline, before creating a phyloseq object
-- `samdat_as_tibble()` extracts a phyloseq object's sample_data component as a tibble (should be simple, right?)
-- Do phyloseq stuff faster (multithreaded `psmelt()` `rarefy_even_depth()`)
-- `tax_glom2()` : a rewritten `phyloseq::tax_glom()` that updates taxa names to reflect the agglomeration rank and removes counts from taxa with missing classifications at that rank.
-- `rarecurve()` : relatively fast rarefaction curves
-- `assemblePhyloseq()`: Helper functions to assemble phyloseq objects from the output of metaphlan and kraken
-- `community_viz()`: a plotting function for sample-wise visualisation of microbiome compositions in a bar chart at desired taxonomic levels
-- a bunch of functions to compute diversity in different ways using a phyloseq object
-- `compute_pcoa` takes a phyloseq object and leverages vegan to produce an object containing a distance matricx, an sample data table with the first two PCo, and a data.frame of eigenvalues.
-  
-Some code is shamelessly stolen from other repositories to be improved upon. I know, I should open an issue or branch or whatever, I just did not get around to it. 
+# mgx.tools
+
+Helper functions for metagenomics and amplicon sequencing processing in
+R. Goes from raw reads to phyloseq object, with parallelized rewrites of
+common functions and utilities for informed filtering decisions.
+
+## Dependencies
+
+This package relies on several **Bioconductor** packages that must be
+installed manually before installing `mgx.tools`:
+
+``` r
+if (!require("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+BiocManager::install(c(
+    "Biostrings",
+    "dada2",
+    "DESeq2",
+    "phyloseq",
+    "ShortRead",
+    "SummarizedExperiment"
+))
+```
+
+## Installation
+
+Once Bioconductor dependencies are installed:
+
+``` r
+# install.packages("devtools")
+devtools::install_github("jorondo1/mgx.tools")
+# unloadNamespace("mgx.tools"); devtools::install_github("jorondo1/mgx.tools", force = TRUE); library(mgx.tools)
+```
+
+## Overview
+
+| Function              | Description                                   |
+|-----------------------|-----------------------------------------------|
+| `primer_occurence()`  | Check primer orientations across reads        |
+| `run_cutadapt()`      | Cutadapt wrapper for use with `mclapply`      |
+| `dropped_samples()`   | Identify samples lost after filtering         |
+| `track_dada()`        | Compile read counts across DADA2 steps        |
+| `plot_track_change()` | Visualise read loss across pipeline steps     |
+| `gen_qplots()`        | Generate quality plots in parallel            |
+| `save_qplots()`       | Export quality plots to PDF                   |
+| `chimera_report()`    | Report chimera rates                          |
+| `minimum_ASV_count()` | Plot ASV counts by minimum sequence threshold |
+| `drop_rare_asvs()`    | Remove rare ASVs and empty samples            |
+| `asv_to_fasta()`      | Export ASV sequences as FASTA                 |
