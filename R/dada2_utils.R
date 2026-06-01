@@ -293,7 +293,7 @@ asv_to_fasta <- function(seqtab, path.out) {
 }
 
 
-#' Quality plotsà ----------------------------------------------------------
+#' Quality plots ----------------------------------------------------------
 #' Generate qplots
 
 #' @param Fs Forwards
