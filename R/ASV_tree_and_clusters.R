@@ -32,6 +32,7 @@ ASV_tree_for_physeq <- function(
 #' @param physeq a phyloseq object with tree data
 #' @param threshold the phylogenetic distance threshold passed to 
 #' @param export_dir directory where to export dendogram as well as taxonomy-cluster consistency plot
+#' @export
 
 cluster_ASVs_physeq <- function(
     physeq,

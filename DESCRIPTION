@@ -18,7 +18,7 @@ Description: This package contains multiple helper functions for processing
     filtering and processing.
 License: MIT + file LICENSE
 Encoding: UTF-8
-Imports:  ape, 
+Imports: ape, 
           Biostrings,
           DESeq2,
           DECIPHER,
@@ -43,4 +43,4 @@ Imports:  ape,
           tibble,
           tidyr,
           vegan
-RoxygenNote: 7.3.3
+Config/roxygen2/version: 8.0.0

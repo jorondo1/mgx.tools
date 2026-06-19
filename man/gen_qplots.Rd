@@ -2,7 +2,7 @@
 % Please edit documentation in R/dada2_utils.R
 \name{gen_qplots}
 \alias{gen_qplots}
-\title{Quality plotsà ----------------------------------------------------------
+\title{Quality plots ----------------------------------------------------------
 Generate qplots}
 \usage{
 gen_qplots(Fs, Rs, nsam = 4)
@@ -15,6 +15,6 @@ gen_qplots(Fs, Rs, nsam = 4)
 \item{nsam}{Number of plots to pick}
 }
 \description{
-Quality plotsà ----------------------------------------------------------
+Quality plots ----------------------------------------------------------
 Generate qplots
 }
