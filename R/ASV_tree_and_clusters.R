@@ -164,9 +164,9 @@ cluster_ASVs_physeq <- function(
       dplyr::group_by(cluster_id, Class, Order, Family, Genus) %>% 
       dplyr::summarise(n_ASVs = dplyr::n(), .groups = 'drop') 
     
-    message(paste(length(inconsistent_clusters),'clusters span multiple genera:'))
+    message(paste(length(inconsistent_clusters),'clusters span multiple genera. Excerpt:'))
     
-    print(kableExtra::kable(inconst_clust_taxonomy), n = 100)
+    print(kableExtra::kable(inconst_clust_taxonomy), n = 20)
   }
 }
 
