@@ -166,7 +166,7 @@ cluster_ASVs_physeq <- function(
     
     message(paste(length(inconsistent_clusters),'clusters span multiple genera. Excerpt:'))
     
-    print(kableExtra::kable(inconst_clust_taxonomy), n = 20)
+    kableExtra::kable(head(inconst_clust_taxonomy, n = 20))
   }
 }
 
