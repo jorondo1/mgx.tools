@@ -36,8 +36,7 @@ ASV_tree_for_physeq <- function(
 
 cluster_ASVs_physeq <- function(
     physeq,
-    threshold = 0.03, 
-    export_dir = here::here('./tree_dendogram')){
+    threshold = 0.03){
   
   if (is.null(phyloseq::phy_tree(physeq, errorIfNULL = FALSE))) {
     stop("Provided phyloseq object doesn't have a tree! Aborting.")
@@ -56,11 +55,13 @@ cluster_ASVs_physeq <- function(
   clusters <- cutree(hc, h = threshold)
   
   # HC plot 
-  hc.plot <- .dendro_plot(hc, threshold)
-  ggplot2::ggsave(
-    file.path(export_dir, paste0("hc_",similarity,".pdf")), 
-    bg = 'white', width = 2400, height = 1600, units = 'px', dpi = 200
-  )
+  # This should be a dendrogram with taxonomy superposed
+  
+  # hc.plot <- .dendro_plot(hc, threshold)
+  # ggplot2::ggsave(
+  #   file.path(export_dir, paste0("hc_",similarity,".pdf")), 
+  #   bg = 'white', width = 2400, height = 1600, units = 'px', dpi = 200
+  # )
   
   # build dataframe and Map back to phyloseq taxonomy table
   cluster_df <- data.frame(
@@ -142,7 +143,9 @@ cluster_ASVs_physeq <- function(
     dplyr::group_by(cluster_id) %>% 
     dplyr::summarise(n=dplyr::n()) %>% 
     dplyr::filter(n>1) %>% 
-    dplyr::pull(cluster_id)
+    dplyr::pull(cluster_id) %>% 
+    unique()
+  
   
   message(paste(length(unique(clusters$cluster_id)), 
                 'clusters created out of',
@@ -161,9 +164,9 @@ cluster_ASVs_physeq <- function(
       dplyr::group_by(cluster_id, Class, Order, Family, Genus) %>% 
       dplyr::summarise(n_ASVs = dplyr::n(), .groups = 'drop') 
     
-    message('The following clusters span multiple genera:')
+    message(paste(length(inconsistent_clusters),'clusters span multiple genera:'))
     
-    print(kableExtra::kable(inconst_clust_taxonomy))
+    print(kableExtra::kable(inconst_clust_taxonomy), n = 100)
   }
 }
 

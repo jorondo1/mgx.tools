@@ -6,11 +6,7 @@
 Adds a column to taxonomy, bridging the Genus-ASV gap for amplicons where the taxonomy is usually unresolved at Species level
 Allows coarser-grain taxonomic analyses without losing unidentified ASVs}
 \usage{
-cluster_ASVs_physeq(
-  physeq,
-  threshold = 0.03,
-  export_dir = here::here("./tree_dendogram")
-)
+cluster_ASVs_physeq(physeq, threshold = 0.03)
 }
 \arguments{
 \item{physeq}{a phyloseq object with tree data}

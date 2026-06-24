@@ -61,6 +61,7 @@ estimate_diversity <- function(ps, index = 'Shannon') {
 #' @param idx a vector of index names
 #' @export
 div.fun <- function(ps, idx) {
+  message('This function is obsolete, use diversity_tibble() instead.')
   div_estimate <- list()
   for (i in seq_along(idx)) { # compute Hill numbers
     H_q=paste0("H_",i-1) # format H_0, H_1...
