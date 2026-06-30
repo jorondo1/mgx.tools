@@ -36,6 +36,7 @@ ASV_tree_for_physeq <- function(
 
 cluster_ASVs_physeq <- function(
     physeq,
+    hclust.method = 'complete',
     threshold = 0.03){
   
   if (is.null(phyloseq::phy_tree(physeq, errorIfNULL = FALSE))) {
@@ -51,7 +52,7 @@ cluster_ASVs_physeq <- function(
   coph_dist <- stats::cophenetic(tree)
   
   # Hierarchical clustering:
-  hc <- stats::hclust(stats::as.dist(coph_dist), method = "average")
+  hc <- stats::hclust(stats::as.dist(coph_dist), method = hclust.method)
   clusters <- cutree(hc, h = threshold)
   
   # HC plot 
