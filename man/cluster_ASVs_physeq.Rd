@@ -4,7 +4,8 @@
 \alias{cluster_ASVs_physeq}
 \title{Create ASV clusters based on phylogenetic distance
 Adds a column to taxonomy, bridging the Genus-ASV gap for amplicons where the taxonomy is usually unresolved at Species level
-Allows coarser-grain taxonomic analyses without losing unidentified ASVs}
+Allows coarser-grain taxonomic analyses without losing unidentified ASVs
+based on https://github.com/benjjneb/dada2/issues/947}
 \usage{
 cluster_ASVs_physeq(physeq, hclust.method = "complete", threshold = 0.03)
 }
@@ -19,4 +20,5 @@ cluster_ASVs_physeq(physeq, hclust.method = "complete", threshold = 0.03)
 Create ASV clusters based on phylogenetic distance
 Adds a column to taxonomy, bridging the Genus-ASV gap for amplicons where the taxonomy is usually unresolved at Species level
 Allows coarser-grain taxonomic analyses without losing unidentified ASVs
+based on https://github.com/benjjneb/dada2/issues/947
 }

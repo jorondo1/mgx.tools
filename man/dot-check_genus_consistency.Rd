@@ -9,7 +9,7 @@ A cluster spanning multple genera suggests the clustering should be done at shor
 .check_genus_consistency(tax_table)
 }
 \arguments{
-\item{tax_table}{a taxonomy data.frame with ASVs as rownames and up to Genus taxonomy column, including a cluster_id column}
+\item{tax_table}{a taxonomy data.frame with ASVs as rownames and up to Genus taxonomy column, including a Species_cluster column}
 }
 \description{
 Evaluates the consistency between ASV clusters and Genus-level classification.

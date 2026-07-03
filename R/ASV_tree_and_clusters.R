@@ -29,6 +29,7 @@ ASV_tree_for_physeq <- function(
 #' Create ASV clusters based on phylogenetic distance
 #' Adds a column to taxonomy, bridging the Genus-ASV gap for amplicons where the taxonomy is usually unresolved at Species level
 #' Allows coarser-grain taxonomic analyses without losing unidentified ASVs
+#' based on https://github.com/benjjneb/dada2/issues/947
 #' @param physeq a phyloseq object with tree data
 #' @param threshold the phylogenetic distance threshold passed to 
 #' @param export_dir directory where to export dendogram as well as taxonomy-cluster consistency plot
@@ -67,7 +68,7 @@ cluster_ASVs_physeq <- function(
   # build dataframe and Map back to phyloseq taxonomy table
   cluster_df <- data.frame(
     ASV = names(clusters),
-    cluster_id = as.factor(clusters)
+    Species_cluster = as.factor(clusters)
   ) 
   
   # Merge into tax table
@@ -122,7 +123,7 @@ cluster_ASVs_physeq <- function(
 #' Evaluates the consistency between ASV clusters and Genus-level classification.
 #' Ideally, each cluster would have the same Genus-level taxonomy.
 #' A cluster spanning multple genera suggests the clustering should be done at shorter phylogenetic distances (threshold)
-#' @param tax_table a taxonomy data.frame with ASVs as rownames and up to Genus taxonomy column, including a cluster_id column
+#' @param tax_table a taxonomy data.frame with ASVs as rownames and up to Genus taxonomy column, including a Species_cluster column
 #' @keywords internal
 
 .check_genus_consistency <- function(tax_table) {
@@ -134,21 +135,21 @@ cluster_ASVs_physeq <- function(
   
   # Unique Genera by cluster
   clusters <- tax_table %>% 
-    dplyr::group_by(cluster_id) %>% 
+    dplyr::group_by(Species_cluster) %>% 
     dplyr::distinct(Genus) %>% 
-    dplyr::arrange(cluster_id)
+    dplyr::arrange(Species_cluster)
   
   # Cluster with more than one defined genus
   inconsistent_clusters <- clusters %>% 
     dplyr::filter(Genus != "Unclassified") %>% 
-    dplyr::group_by(cluster_id) %>% 
+    dplyr::group_by(Species_cluster) %>% 
     dplyr::summarise(n=dplyr::n()) %>% 
     dplyr::filter(n>1) %>% 
-    dplyr::pull(cluster_id) %>% 
+    dplyr::pull(Species_cluster) %>% 
     unique()
   
   
-  message(paste(length(unique(clusters$cluster_id)), 
+  message(paste(length(unique(clusters$Species_cluster)), 
                 'clusters created out of',
                 nrow(tax_table), 'ASVs.'))
   
@@ -160,9 +161,9 @@ cluster_ASVs_physeq <- function(
     
     # print full taxonomy of inconstintent clusters
     inconst_clust_taxonomy <- clusters %>% 
-      dplyr::filter(cluster_id %in% inconsistent_clusters) %>% 
-      dplyr::left_join(tax_table, by = join_by(cluster_id, Genus)) %>% 
-      dplyr::group_by(cluster_id, Class, Order, Family, Genus) %>% 
+      dplyr::filter(Species_cluster %in% inconsistent_clusters) %>% 
+      dplyr::left_join(tax_table, by = join_by(Species_cluster, Genus)) %>% 
+      dplyr::group_by(Species_cluster, Class, Order, Family, Genus) %>% 
       dplyr::summarise(n_ASVs = dplyr::n(), .groups = 'drop') 
     
     message(paste(length(inconsistent_clusters),'clusters span multiple genera. Excerpt:'))
