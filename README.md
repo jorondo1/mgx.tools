@@ -31,9 +31,9 @@ BiocManager::install(c(
 Once Bioconductor dependencies are installed:
 
 ``` r
-# install.packages("devtools")
-devtools::install_github("jorondo1/mgx.tools")
-# unloadNamespace("mgx.tools"); devtools::install_github("jorondo1/mgx.tools", force = TRUE); library(mgx.tools)
+# install.packages("pak")
+pak::pkg_install("jorondo1/mgx.tools")
+# pak::pkg_install("jorondo1/mgx.tools?reinstall", upgrade = TRUE)
 ```
 
 ## Overview

@@ -18,7 +18,8 @@ Description: This package contains multiple helper functions for processing
     filtering and processing.
 License: MIT + file LICENSE
 Encoding: UTF-8
-Imports: ape, 
+Imports:  ape,
+          analogue,
           Biostrings,
           DESeq2,
           DECIPHER,
@@ -31,6 +32,7 @@ Imports: ape,
           ggrain,
           ggdendro,
           magrittr,
+          matrixStats,
           parallel,
           phangorn,
           phyloseq,
