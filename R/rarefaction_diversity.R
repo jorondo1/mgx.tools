@@ -187,9 +187,14 @@ rarefy_diversity <- function(
   
   extract_beta_metric <- function(metric) {
     dist_list <- lapply(results, function(x) x$beta[[metric]])
-    do.call(analogue::fuse, dist_list)
-  }
-  
+    fused_dist <- do.call(analogue::fuse, dist_list)
+    
+    # Clean call and wheights because heavy
+    attr(fused_dist, "call") <- NULL
+    attr(fused_dist, "weights") <- NULL
+
+    return(fused_dist)
+  }  
   ## ---- 7. Return -------------------------------------------------------
   
   list(
