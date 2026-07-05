@@ -2,7 +2,8 @@
 % Please edit documentation in R/pcoa_tools.R
 \name{compute_pcoa}
 \alias{compute_pcoa}
-\title{PCOA
+\title{Distance-based analyses
+PCOA
 Return a list of 3 elements :
 1. the phyloseq sample_data with 2 first PCo added
 2. the eigenvalues
@@ -20,6 +21,7 @@ compute_pcoa(ps, dist, all_coordinates = FALSE, vst = FALSE)
 \item{vst}{default FALSE, whether to use variance-stabilizing transformation}
 }
 \description{
+Distance-based analyses
 PCOA
 Return a list of 3 elements :
 1. the phyloseq sample_data with 2 first PCo added

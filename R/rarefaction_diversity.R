@@ -18,14 +18,20 @@ rarefy_diversity <- function(
     mc.cores = parallel::detectCores(),
     vst = FALSE) {
   
-  ## ---- 1. Extract count table, set rarefaction depth ---------------------
+  # Root tree if necessary
+  
+  if (!ape::is.rooted(phyloseq::phy_tree(ps))) {
+    phyloseq::phy_tree(ps) <- phangorn::midpoint(phyloseq::phy_tree(ps))
+  }
+  
+  # extract counts, transpose if needed
   
   count_table <- as(phyloseq::otu_table(ps), 'matrix')
   if (phyloseq::taxa_are_rows(ps)) count_table <- t(count_table)
   
   depth <- depth %||% min(rowSums(count_table))
   
-  ## ---- 2. Drop samples below depth & now-empty taxa ------------------------
+  ## ---- Drop samples below depth & now-empty taxa ------------------------
   # Filtering here (once) keeps ps, count_table, and n_samples consistent for
   # the rest of the function.
   
@@ -33,8 +39,14 @@ rarefy_diversity <- function(
   keep_samples <- rowSums(count_table) >= depth
   keep_taxa    <- colSums(count_table[keep_samples, , drop = FALSE]) > 0
   
-  ps <- phyloseq::prune_samples(rownames(count_table)[keep_samples], ps)
-  ps <- phyloseq::prune_taxa(colnames(count_table)[keep_taxa], ps)
+  if (all(keep_samples)) {
+    ps_depth <- ps
+  } else {
+    ps_depth <- phyloseq::prune_samples(rownames(count_table)[keep_samples], ps)
+  }
+  if (!all(keep_taxa)) {
+    ps_depth <- phyloseq::prune_taxa(colnames(count_table)[keep_taxa], ps_depth)
+  }
   
   count_table <- count_table[keep_samples, keep_taxa]
   n_samples   <- nrow(count_table)
@@ -51,44 +63,31 @@ rarefy_diversity <- function(
     
     # -- re-filter
     # a taxon can rarefy down to zero reads across all samples in a given draw.
-    keep_samples <- rowSums(taxon_rare) >= depth
-    keep_taxa    <- colSums(taxon_rare[keep_samples, , drop = FALSE]) > 0
+    keep_taxa    <- colSums(taxon_rare) > 0
     
-    ps_rare <- phyloseq::prune_samples(rownames(taxon_rare)[keep_samples], ps)
-    ps_rare <- phyloseq::prune_taxa(colnames(taxon_rare)[keep_taxa], ps_rare)
-    
-    taxon_rare <- taxon_rare[keep_samples, keep_taxa]
+    if (all(keep_taxa)) {
+      ps_rare <- ps
+    } else {
+      ps_rare <- phyloseq::prune_taxa(colnames(taxon_rare)[keep_taxa], ps_depth)
+      taxon_rare <- taxon_rare[, keep_taxa, drop = FALSE]
+    }
     
     n_taxa          <- ncol(taxon_rare)
     n_samples_iter  <- nrow(taxon_rare)
     tail_multiplier <- (seq_len(n_taxa) - 1)^2
     
-    ## -- Alpha diversity (row-wise, pre-allocated) --
+    ## -- Alpha diversity --
+    row_sums <- rowSums(taxon_rare)
+    richness <- rowSums(taxon_rare > 0)
+    # Shannon
+    p        <- taxon_rare / row_sums
+    logp     <- ifelse(p > 0, log(p), 0)
+    shannon  <- -rowSums(p * logp)
+    simpson  <- rowSums(p^2)
     
-    richness  <- integer(n_samples_iter)
-    shannon   <- numeric(n_samples_iter)
-    simpson   <- numeric(n_samples_iter)
-    tail_vals <- numeric(n_samples_iter)
-    
-    for (j in 1:n_samples_iter) {
-      row <- taxon_rare[j, ]
-      non_zero_idx  <- row > 0
-      non_zero_vals <- row[non_zero_idx]
-      
-      if (length(non_zero_vals) > 0) {
-        row_sum <- sum(non_zero_vals)
-        richness[j] <- length(non_zero_vals)
-        
-        # Faster Shannon using precomputed log
-        p <- non_zero_vals / row_sum
-        shannon[j] <- -sum(p * log(p))
-        simpson[j] <- sum(p * p)
-      }
-      
-      # Tail statistic - sort entire row
-      # Could be optimized with partial sort, but likely not worth it
-      tail_vals[j] <- sqrt(sum(sort(row, decreasing = TRUE) * tail_multiplier))
-    }
+    # Tail : 
+    sorted_mat <- apply(taxon_rare, 1, sort, decreasing = TRUE)  # n_taxa x n_samples
+    tail_vals  <- sqrt(colSums(sorted_mat * tail_multiplier))
     
     ## -- Rebuild rarefied ps object for Faith PD and UniFrac --
     
@@ -103,10 +102,17 @@ rarefy_diversity <- function(
     
     counts_vst <-
       if (vst) {
-        suppressMessages(mgx.tools:::vst_ps_to_mx(ps_rare))
+        suppressMessages(mgx.tools::vst_ps_to_mx(ps_rare))
       } else { 
         phyloseq::otu_table(ps_rare) 
       }
+    
+    # Unifrac 
+    gu <- suppressWarnings(
+      GUniFrac::GUniFrac(
+        taxon_rare, phyloseq::phy_tree(ps_rare), alpha = c(1), verbose = FALSE))
+
+    # Return: 
     
     list(
       alpha = list(
@@ -117,8 +123,8 @@ rarefy_diversity <- function(
         faith    = faith_res$PD),
       
       beta = list(
-        unifrac.w   = suppressWarnings(phyloseq::UniFrac(ps_rare, weighted = TRUE)),
-        unifrac.u   = suppressWarnings(phyloseq::UniFrac(ps_rare, weighted = FALSE)),
+        unifrac.w   = as.dist(gu$unifracs[, , "d_1"]),
+        unifrac.u   = as.dist(gu$unifracs[, , "d_UW"]) ,
         bray        = vegan::vegdist(counts_vst, method = 'bray'),
         # note: r.aitchison uses the non-vst transformed, but rarefied table
         # motivated by https://pubmed.ncbi.nlm.nih.gov/38251877/
@@ -129,10 +135,16 @@ rarefy_diversity <- function(
   
   ## ---- 4. Run all iterations (parallel) ------------------------------------
   
-  results <- parallel::mcmapply(
-    rarefy_iter, 1:n_iter, SIMPLIFY = FALSE, mc.cores = mc.cores
-  )
+  # Exception if only one core
+  plan_type <- if (mc.cores > 1) future::multisession else future::sequential
+  future::plan(plan_type, workers = mc.cores)
+  on.exit(future::plan(future::sequential), add = TRUE)
   
+  # Loop 
+  results <- furrr::future_map(
+    1:n_iter, rarefy_iter,
+    .options = furrr::furrr_options(seed = TRUE)
+  )
   ## ---- 5. Aggregate alpha diversity across iterations -----------------------
   
   extract_alpha_metric <- function(metric) {
@@ -161,7 +173,7 @@ rarefy_diversity <- function(
     row.names = rownames(count_table)
   )
   
-  sd <- phyloseq::sample_data(ps)
+  sd <- phyloseq::sample_data(ps_depth)
   for (metric in names(alpha_average)) {
     sd[[metric]] <- alpha_average[[metric]]
   }
