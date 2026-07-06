@@ -349,6 +349,46 @@ save_qplots <- function(plot_list, out_dir, step_id){
 }
 
 
+# Taxonomy ----------------------------------------------------------------
+
+#' format DECIPHER output for dada2
+#' @param ids output from  DECIPHER::IdTaxa
+#' @param seqtab sequence table that was passed to DECIPHER::IdTaxa
+#' @param ranks a vector describing the rank names to use, should start with 'rootrank'
+#' @export
+
+format_DECIPHER_for_dada2 <- function(ids, seqtab, ranks = NULL) {
+  
+  # If ranks not provided, extract them from the IdTaxa results
+  if (is.null(ranks)) {
+    # Get all unique ranks from the classifications
+    all_ranks <- unique(unlist(lapply(ids, function(x) x$rank)))
+    # Remove "Root" and sort by typical hierarchy
+    ranks <- all_ranks[all_ranks != "Root"]
+    message("Detected ranks: ", paste(ranks, collapse = ", "))
+  }
+  
+  # Convert the output object of class "Taxa" to a matrix 
+  # analogous to the output from assignTaxonomy
+  taxid <- t(sapply(ids, function(x) {
+    m <- match(ranks, x$rank)
+    taxa <- x$taxon[m]
+    taxa[startsWith(taxa, "unclassified_")] <- NA
+    taxa
+  }))
+  
+  colnames(taxid) <- ranks
+  rownames(taxid) <- getSequences(seqtab)
+  
+  perc_NA <- round(
+    100 * sum(is.na(taxid)) / (nrow(taxid) * ncol(taxid)),
+    2)
+  
+  message(paste(perc_NA, '% of NAs'))
+  
+  return(taxid)
+}
+
 
 
 
