@@ -1,5 +1,6 @@
 #' Distance-based analyses
-
+#' 
+#' @description
 #' PCOA
 #' Return a list of 3 elements :
 #' 1. the phyloseq sample_data with 2 first PCo added
@@ -63,6 +64,8 @@ compute_pcoa <- function(ps, dist,
 }
 
 #' Pivot a dist object to a long dataframe
+#' 
+#' @description
 #' Possible to use only a subset of samples, provided their name
 #' @param dist.mx distance matrix (dist object from vegan::)
 #' @param sample_subset a vector of sample names to subset the distance matrix

@@ -2,8 +2,7 @@
 % Please edit documentation in R/assemblePhyloseq.R
 \name{assemble_phyloseq}
 \alias{assemble_phyloseq}
-\title{Assemble phyloseq object from a table that contains both taxonomy and sample identifiers in the columns
-Tailored to work with the tibble-format output of parse_*() functions (mgx.tools package under development)}
+\title{Assemble phyloseq object}
 \usage{
 assemble_phyloseq(
   abunTable,
@@ -33,6 +32,6 @@ assemble_phyloseq(
 \item{abundTable}{wide tibble with taxonomic ranks and sample IDs as column; one species (or ASV) per row}
 }
 \description{
-Assemble phyloseq object from a table that contains both taxonomy and sample identifiers in the columns
+from a table that contains both taxonomy and sample identifiers in the columns
 Tailored to work with the tibble-format output of parse_*() functions (mgx.tools package under development)
 }

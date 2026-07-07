@@ -1,9 +1,4 @@
-#' utility tools to work with phyloseq objects
-#' 1. samdat_as_tibble()
-#' 2.
-#'
-
-#' Keep samples with metadata
+#' Keep samples present in metadata
 #' @param seqtab matrix sequence table with samples as rows
 #' @param samples vector of sample names
 #' @export
@@ -12,6 +7,10 @@ subset_samples <- function(seqtab, samples) {
     .[, colSums(.) > 0] # Remove taxa with no hits
 }
 
+#' Filter taxonomy
+#' 
+#' @description
+#' 
 #' ASVs classified at the kingdom level and present in seqtab
 #' @param taxonomy taxonomic table with unique ID as rows (e.g. OTU, ASV, Species)
 #' @param seqtab matrix sequence table with samples as rows
@@ -77,7 +76,9 @@ viz_seqdepth <- function(seqtab, breaks = 100, log_count = FALSE) {
   axis(1, at = pretty(sums, n = 40))  # adding ticks
 }
 
-#' 1. Get a phyloseq object's sample data as tibble
+#' Get a phyloseq object's sample data as tibble
+#' 
+#' @description
 #' Creates a Sample column with the sample names
 #' @param ps a phyloseq object
 #' @param strings_as_factors convert strings to factors

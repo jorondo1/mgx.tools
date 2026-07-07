@@ -2,14 +2,11 @@
 % Please edit documentation in R/dada2_utils.R
 \name{dropped_samples}
 \alias{dropped_samples}
-\title{Check if an expected file exists
-Filtering with minlen may yield empty samples (e.g. neg. controls);
-list files that did survive filtering:}
+\title{Check if an expected file exists}
 \usage{
 dropped_samples(path_list)
 }
 \description{
-Check if an expected file exists
 Filtering with minlen may yield empty samples (e.g. neg. controls);
 list files that did survive filtering:
 }

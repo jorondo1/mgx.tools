@@ -1,4 +1,7 @@
-#' Assemble phyloseq object from a table that contains both taxonomy and sample identifiers in the columns
+#' Assemble phyloseq object 
+#' 
+#' @description
+#' from a table that contains both taxonomy and sample identifiers in the columns
 #' Tailored to work with the tibble-format output of parse_*() functions (mgx.tools package under development)
 
 #' @param abundTable wide tibble with taxonomic ranks and sample IDs as column; one species (or ASV) per row

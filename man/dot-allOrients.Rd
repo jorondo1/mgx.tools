@@ -2,8 +2,7 @@
 % Please edit documentation in R/dada2_utils.R
 \name{.allOrients}
 \alias{.allOrients}
-\title{Find all orientation of primers in the data
-stolen from DADA2 tutorial https://benjjneb.github.io/dada2/tutorial.html}
+\title{Find all orientation of primers in the data}
 \usage{
 .allOrients(primer)
 }
@@ -11,7 +10,6 @@ stolen from DADA2 tutorial https://benjjneb.github.io/dada2/tutorial.html}
 \item{primer}{primer sequence as string}
 }
 \description{
-Find all orientation of primers in the data
 stolen from DADA2 tutorial https://benjjneb.github.io/dada2/tutorial.html
 }
 \keyword{internal}

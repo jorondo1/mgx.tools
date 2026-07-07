@@ -2,14 +2,11 @@
 % Please edit documentation in R/dada2_utils.R
 \name{drop_rare_asvs}
 \alias{drop_rare_asvs}
-\title{Remove ultra rare asvs
-Remove samples with fewer than n sequences
-as well as singletons, if any (shouldn't)}
+\title{Remove ultra rare asvs}
 \usage{
 drop_rare_asvs(seqtab.nochim, at_least_n)
 }
 \description{
-Remove ultra rare asvs
 Remove samples with fewer than n sequences
 as well as singletons, if any (shouldn't)
 }

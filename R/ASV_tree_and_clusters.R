@@ -27,6 +27,8 @@ ASV_tree_for_physeq <- function(
 }
 
 #' Create ASV clusters based on phylogenetic distance
+#' 
+#' @description
 #' Adds a column to taxonomy, bridging the Genus-ASV gap for amplicons where the taxonomy is usually unresolved at Species level
 #' Allows coarser-grain taxonomic analyses without losing unidentified ASVs
 #' based on https://github.com/benjjneb/dada2/issues/947
@@ -121,6 +123,8 @@ cluster_ASVs_physeq <- function(
 
 
 #' Evaluates the consistency between ASV clusters and Genus-level classification.
+#' 
+#' @description
 #' Ideally, each cluster would have the same Genus-level taxonomy.
 #' A cluster spanning multple genera suggests the clustering should be done at shorter phylogenetic distances (threshold)
 #' @param tax_table a taxonomy data.frame with ASVs as rownames and up to Genus taxonomy column, including a Species_cluster column

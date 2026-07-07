@@ -1,9 +1,13 @@
+#' Iterative rarefaction to estimate alpha and beta diversities
+#' 
+#' @description
 #' A function to repeat rarefy and return an updated phyloseq object
 #' Takes in a ps object and outputs sample_data as a tibble with one column per index
 #' If phy_tree, computes Faith and both Unifrac metrics
 #' 
 #' Note: mc.cores > 1 relies on parallel::mcmapply (fork-based), which is
 #' not available on Windows -- falls back to mc.cores = 1 there.
+#' 
 #' @param ps a phyloseq object
 #' @param depth sequencing depth to rarefy to (default: min sample size)
 #' @param n_iter number of rarefaction iterations
@@ -18,10 +22,20 @@ rarefy_diversity <- function(
     mc.cores = parallel::detectCores(),
     vst = FALSE) {
   
-  # Root tree if necessary
+  # # Checks
+  # if (!mode %in% c('amplicon', 'metagenome')) {
+  #   stop("Mode must either be 'amplicon' or 'metagenome'")
+  # }
   
-  if (!ape::is.rooted(phyloseq::phy_tree(ps))) {
-    phyloseq::phy_tree(ps) <- phangorn::midpoint(phyloseq::phy_tree(ps))
+  # If phy tree
+  if (is.null(phy_tree(ps, errorIfNULL = FALSE))){
+    withPhyTree <- FALSE
+  } else {
+    withPhyTree <- TRUE
+    # Root tree if necessary
+    if (!ape::is.rooted(phyloseq::phy_tree(ps))) {
+      phyloseq::phy_tree(ps) <- phangorn::midpoint(phyloseq::phy_tree(ps))
+    }
   }
   
   # extract counts, transpose if needed
@@ -76,10 +90,10 @@ rarefy_diversity <- function(
     n_samples_iter  <- nrow(taxon_rare)
     tail_multiplier <- (seq_len(n_taxa) - 1)^2
     
-    ## -- Alpha diversity --
     row_sums <- rowSums(taxon_rare)
     richness <- rowSums(taxon_rare > 0)
-    # Shannon
+    
+    # -- Classic div indices --
     p        <- taxon_rare / row_sums
     logp     <- ifelse(p > 0, log(p), 0)
     shannon  <- -rowSums(p * logp)
@@ -89,16 +103,11 @@ rarefy_diversity <- function(
     sorted_mat <- apply(taxon_rare, 1, sort, decreasing = TRUE)  # n_taxa x n_samples
     tail_vals  <- sqrt(colSums(sorted_mat * tail_multiplier))
     
-    ## -- Rebuild rarefied ps object for Faith PD and UniFrac --
+    ## -- Rebuild rarefied ps object for Faith PD, UniFrac, vst --
     
     phyloseq::otu_table(ps_rare) <- phyloseq::otu_table(
       taxon_rare, taxa_are_rows = FALSE
     )
-    
-    # Faith PD: 
-    faith_res <- suppressWarnings(suppressMessages(btools::estimate_pd(ps_rare)))
-    
-    ## -- Beta diversity --
     
     counts_vst <-
       if (vst) {
@@ -106,31 +115,38 @@ rarefy_diversity <- function(
       } else { 
         phyloseq::otu_table(ps_rare) 
       }
-    
-    # Unifrac 
-    gu <- suppressWarnings(
-      GUniFrac::GUniFrac(
-        taxon_rare, phyloseq::phy_tree(ps_rare), alpha = c(1), verbose = FALSE))
-
     # Return: 
     
-    list(
+    out <- list(
       alpha = list(
         richness = richness, 
         shannon  = shannon, 
         simpson  = simpson, 
-        tail     = tail_vals,
-        faith    = faith_res$PD),
+        tail     = tail_vals
+      ),
       
       beta = list(
-        unifrac.w   = as.dist(gu$unifracs[, , "d_1"]),
-        unifrac.u   = as.dist(gu$unifracs[, , "d_UW"]) ,
         bray        = vegan::vegdist(counts_vst, method = 'bray'),
         # note: r.aitchison uses the non-vst transformed, but rarefied table
         # motivated by https://pubmed.ncbi.nlm.nih.gov/38251877/
         r.aitchison = vegan::vegdist(taxon_rare, method = 'robust.aitchison')
       )
     )
+    
+    if(withPhyTree) {
+      # Faith PD: 
+      faith_res <- suppressWarnings(suppressMessages(btools::estimate_pd(ps_rare)))
+      
+      # Unifrac 
+      gu <- suppressWarnings(
+        GUniFrac::GUniFrac(
+          taxon_rare, phyloseq::phy_tree(ps_rare), alpha = c(1), verbose = FALSE))
+      
+      out$alpha$faith    <- faith_res$PD
+      out$beta$unifrac.w <- as.dist(gu$unifracs[, , "d_1"])
+      out$beta$unifrac.u<-  as.dist(gu$unifracs[, , "d_UW"])
+    }
+    
   }
   
   ## ---- 4. Run all iterations (parallel) ------------------------------------
@@ -145,8 +161,9 @@ rarefy_diversity <- function(
     1:n_iter, rarefy_iter,
     .options = furrr::furrr_options(seed = TRUE)
   )
-  ## ---- 5. Aggregate alpha diversity across iterations -----------------------
+  ## ---- 5. Extraction functions for iterations -----------------------
   
+  # - ALPHA
   extract_alpha_metric <- function(metric) {
     matrix(
       unlist(lapply(results, function(x) x$alpha[[metric]])),
@@ -154,14 +171,31 @@ rarefy_diversity <- function(
     )
   }
   
+  # means for alpha
+  row_means <- function(x) matrixStats::rowMeans2(x)
+  
+  # - BETA
+  extract_beta_metric <- function(metric) {
+    
+    dist_list <- lapply(results, function(x) x$beta[[metric]])
+    # Using fuse to average matrices efficiently:
+    fused_dist <- do.call(analogue::fuse, dist_list)
+    
+    # Clean call and wheights because heavy object
+    attr(fused_dist, "call") <- NULL
+    attr(fused_dist, "weights") <- NULL
+    
+    return(fused_dist)
+  }  
+  
+  ## ---- 6. Aggregate diversity across iterations ----------------
+  
   richness_mat <- extract_alpha_metric("richness")
   shannon_mat  <- extract_alpha_metric("shannon")
   simpson_mat  <- extract_alpha_metric("simpson")
   tail_mat     <- extract_alpha_metric("tail")
-  faith_mat    <- extract_alpha_metric("faith")
   
-  row_means <- function(x) matrixStats::rowMeans2(x)
-  
+  # Alpha out
   alpha_average <- data.frame(
     Richness = row_means(richness_mat),
     Shannon  = row_means(shannon_mat),
@@ -169,10 +203,24 @@ rarefy_diversity <- function(
     Simpson  = row_means(simpson_mat),
     Hill_2   = row_means(1 / simpson_mat),
     Tail     = row_means(tail_mat),
-    Faith    = row_means(faith_mat),
     row.names = rownames(count_table)
   )
   
+  # Beta out
+  beta_list <- list(
+      bray        = extract_beta_metric("bray"),
+      r_aitchison = extract_beta_metric("r.aitchison")
+    )
+  
+  # When tree
+  if(withPhyTree) {
+    faith_mat           <- extract_alpha_metric("faith")
+    alpha_average$Faith <- row_means(faith_mat)
+    beta_list$unifrac_u <- extract_beta_metric("unifrac.u")
+    beta_list$unifrac_w <- extract_beta_metric("unifrac.w")
+  }
+  
+  # Build tibble with sample data
   sd <- phyloseq::sample_data(ps_depth)
   for (metric in names(alpha_average)) {
     sd[[metric]] <- alpha_average[[metric]]
@@ -183,27 +231,10 @@ rarefy_diversity <- function(
     tibble::rownames_to_column('Sample') %>% 
     tibble::tibble()
   
-  ## ---- 6. Aggregate beta diversity across iterations (fuse) ----------------
-  
-  extract_beta_metric <- function(metric) {
-    dist_list <- lapply(results, function(x) x$beta[[metric]])
-    fused_dist <- do.call(analogue::fuse, dist_list)
-    
-    # Clean call and wheights because heavy
-    attr(fused_dist, "call") <- NULL
-    attr(fused_dist, "weights") <- NULL
-
-    return(fused_dist)
-  }  
   ## ---- 7. Return -------------------------------------------------------
   
   list(
     alpha = alpha_tibble,
-    beta = list(
-      bray        = extract_beta_metric("bray"),
-      unifrac_u   = extract_beta_metric("unifrac.u"),
-      unifrac_w   = extract_beta_metric("unifrac.w"),
-      r_aitchison = extract_beta_metric("r.aitchison")
-    )
+    beta = beta_list
   )
 }

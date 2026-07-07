@@ -2,8 +2,7 @@
 % Please edit documentation in R/pcoa_tools.R
 \name{compile_dist_pairs}
 \alias{compile_dist_pairs}
-\title{Pivot a dist object to a long dataframe
-Possible to use only a subset of samples, provided their name}
+\title{Pivot a dist object to a long dataframe}
 \usage{
 compile_dist_pairs(dist.mx, sample_subset = NULL)
 }
@@ -13,6 +12,5 @@ compile_dist_pairs(dist.mx, sample_subset = NULL)
 \item{sample_subset}{a vector of sample names to subset the distance matrix}
 }
 \description{
-Pivot a dist object to a long dataframe
 Possible to use only a subset of samples, provided their name
 }

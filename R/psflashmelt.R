@@ -1,3 +1,6 @@
+#' Melt a phyloseq object, faster
+#' 
+#' @description
 #' the original psmelt function, but optimized using data.table and dplyr syntax
 #' should be insanely faster than the original
 #' shamelessly AI generated

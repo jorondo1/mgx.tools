@@ -2,9 +2,7 @@
 % Please edit documentation in R/rarefaction_diversity.R
 \name{rarefy_diversity}
 \alias{rarefy_diversity}
-\title{A function to repeat rarefy and return an updated phyloseq object
-Takes in a ps object and outputs sample_data as a tibble with one column per index
-If phy_tree, computes Faith and both Unifrac metrics}
+\title{Iterative rarefaction to estimate alpha and beta diversities}
 \usage{
 rarefy_diversity(
   ps,
@@ -26,6 +24,10 @@ rarefy_diversity(
 \item{vst}{use variance-stabilizing transformation for bray-curtis and unifrac distances}
 }
 \description{
+A function to repeat rarefy and return an updated phyloseq object
+Takes in a ps object and outputs sample_data as a tibble with one column per index
+If phy_tree, computes Faith and both Unifrac metrics
+
 Note: mc.cores > 1 relies on parallel::mcmapply (fork-based), which is
 not available on Windows -- falls back to mc.cores = 1 there.
 }

@@ -2,10 +2,7 @@
 % Please edit documentation in R/psflashmelt.R
 \name{psflashmelt}
 \alias{psflashmelt}
-\title{the original psmelt function, but optimized using data.table and dplyr syntax
-should be insanely faster than the original
-shamelessly AI generated
-Creates a much smaller table because it omits every row for which Abundance == 0}
+\title{Melt a phyloseq object, faster}
 \usage{
 psflashmelt(physeq)
 }

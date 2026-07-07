@@ -2,9 +2,7 @@
 % Please edit documentation in R/physeqUtils.R
 \name{subset_samples}
 \alias{subset_samples}
-\title{utility tools to work with phyloseq objects
-1. samdat_as_tibble()
-2.}
+\title{Keep samples present in metadata}
 \usage{
 subset_samples(seqtab, samples)
 }
@@ -14,5 +12,5 @@ subset_samples(seqtab, samples)
 \item{samples}{vector of sample names}
 }
 \description{
-Keep samples with metadata
+Keep samples present in metadata
 }

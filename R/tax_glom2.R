@@ -1,4 +1,6 @@
-#' Author : Jonathan Rondeau-Leclaire
+#' Rewritten `tax_glom()`
+#' 
+#' @description
 #' This new version of tax_glom updates the index names to the
 #' agglomerated taxrank, to avoid e.g. keeping an arbitrary ASV for
 #' a genus that encompasses multiple ASVs post agglomeration.

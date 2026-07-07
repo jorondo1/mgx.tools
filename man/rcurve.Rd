@@ -2,8 +2,7 @@
 % Please edit documentation in R/rcurve.R
 \name{rcurve}
 \alias{rcurve}
-\title{stolen from https://github.com/Russel88/MicEco/blob/master/R/rcurve.R
-minor adjustments to transform otu as matrix}
+\title{Rarefaction curves, faster}
 \usage{
 rcurve(physeq, subsamp = 10^c(1:5), trim = TRUE, add_sample_data = TRUE)
 }

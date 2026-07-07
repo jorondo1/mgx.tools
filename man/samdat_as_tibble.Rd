@@ -2,8 +2,7 @@
 % Please edit documentation in R/physeqUtils.R
 \name{samdat_as_tibble}
 \alias{samdat_as_tibble}
-\title{1. Get a phyloseq object's sample data as tibble
-Creates a Sample column with the sample names}
+\title{Get a phyloseq object's sample data as tibble}
 \usage{
 samdat_as_tibble(ps, strings_as_factors = TRUE)
 }
@@ -13,6 +12,5 @@ samdat_as_tibble(ps, strings_as_factors = TRUE)
 \item{strings_as_factors}{convert strings to factors}
 }
 \description{
-1. Get a phyloseq object's sample data as tibble
 Creates a Sample column with the sample names
 }

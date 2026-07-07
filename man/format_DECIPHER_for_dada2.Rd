@@ -2,9 +2,13 @@
 % Please edit documentation in R/dada2_utils.R
 \name{format_DECIPHER_for_dada2}
 \alias{format_DECIPHER_for_dada2}
-\title{format DECIPHER output for dada2}
+\title{Format DECIPHER output for dada2}
 \usage{
-format_DECIPHER_for_dada2(ids, seqtab, ranks = NULL)
+format_DECIPHER_for_dada2(
+  ids,
+  seqtab,
+  ranks = c("rootrank", "kingdom", "phylum", "class", "order", "family", "genus")
+)
 }
 \arguments{
 \item{ids}{output from  DECIPHER::IdTaxa}
@@ -14,5 +18,5 @@ format_DECIPHER_for_dada2(ids, seqtab, ranks = NULL)
 \item{ranks}{a vector describing the rank names to use, should start with 'rootrank'}
 }
 \description{
-format DECIPHER output for dada2
+adapted from Adapted from https://benjjneb.github.io/dada2/tutorial.html
 }

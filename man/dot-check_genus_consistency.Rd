@@ -2,9 +2,7 @@
 % Please edit documentation in R/ASV_tree_and_clusters.R
 \name{.check_genus_consistency}
 \alias{.check_genus_consistency}
-\title{Evaluates the consistency between ASV clusters and Genus-level classification.
-Ideally, each cluster would have the same Genus-level taxonomy.
-A cluster spanning multple genera suggests the clustering should be done at shorter phylogenetic distances (threshold)}
+\title{Evaluates the consistency between ASV clusters and Genus-level classification.}
 \usage{
 .check_genus_consistency(tax_table)
 }
@@ -12,7 +10,6 @@ A cluster spanning multple genera suggests the clustering should be done at shor
 \item{tax_table}{a taxonomy data.frame with ASVs as rownames and up to Genus taxonomy column, including a Species_cluster column}
 }
 \description{
-Evaluates the consistency between ASV clusters and Genus-level classification.
 Ideally, each cluster would have the same Genus-level taxonomy.
 A cluster spanning multple genera suggests the clustering should be done at shorter phylogenetic distances (threshold)
 }

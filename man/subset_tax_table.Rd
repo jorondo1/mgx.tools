@@ -2,7 +2,7 @@
 % Please edit documentation in R/physeqUtils.R
 \name{subset_tax_table}
 \alias{subset_tax_table}
-\title{ASVs classified at the kingdom level and present in seqtab}
+\title{Filter taxonomy}
 \usage{
 subset_tax_table(taxonomy, seqtab, min_seq)
 }

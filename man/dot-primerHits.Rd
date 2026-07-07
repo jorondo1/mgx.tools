@@ -2,14 +2,11 @@
 % Please edit documentation in R/dada2_utils.R
 \name{.primerHits}
 \alias{.primerHits}
-\title{Primer counter
-Count the number of times the primers appear in the forward and reverse read,
-while considering all possible primer orientations}
+\title{Primer counter}
 \usage{
 .primerHits(primer, fn)
 }
 \description{
-Primer counter
 Count the number of times the primers appear in the forward and reverse read,
 while considering all possible primer orientations
 }

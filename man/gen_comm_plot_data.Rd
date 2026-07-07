@@ -2,9 +2,7 @@
 % Please edit documentation in R/community_viz.R
 \name{gen_comm_plot_data}
 \alias{gen_comm_plot_data}
-\title{long df prepared for barchart visualisation of community members
-generates an "others" category for a specified number of taxa
-at desired taxonomic rank}
+\title{Community-plot data from a melted phyloseq object}
 \usage{
 gen_comm_plot_data(
   melted_ps,

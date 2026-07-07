@@ -1,4 +1,6 @@
 #' Find all orientation of primers in the data
+#' 
+#' @description
 #' stolen from DADA2 tutorial https://benjjneb.github.io/dada2/tutorial.html
 #' @param primer primer sequence as string
 #' @keywords internal
@@ -13,6 +15,8 @@
 }
 
 #' Primer counter
+#' 
+#' @description
 #' Count the number of times the primers appear in the forward and reverse read,
 #' while considering all possible primer orientations
 #' @keywords internal
@@ -25,6 +29,7 @@
 
 
 #' Compute primer occurence across all orientations
+#' 
 #' @param fnFs Forward read files
 #' @param fnRs Reverse read files
 #' @param FWD Forward primer sequence
@@ -73,6 +78,8 @@ primer_occurence <- function(fnFs, fnRs, FWD, REV, ncores = NULL){
 }
 
 #' CUTADAPT wrapper function
+#' 
+#' @description
 #' Adapted cutadapt in function to allow using it within mclapply
 #' @export
 run_cutadapt <- function(i, cutadapt_path, R1.flags, R2.flags) {
@@ -102,6 +109,8 @@ run_cutadapt <- function(i, cutadapt_path, R1.flags, R2.flags) {
 }
 
 #' Check if an expected file exists
+#' 
+#' @description
 #' Filtering with minlen may yield empty samples (e.g. neg. controls);
 #' list files that did survive filtering:
 #' @export
@@ -160,6 +169,8 @@ minimum_ASV_count <- function(seqtab.nochim){
 }
 
 #' Remove ultra rare asvs
+#' 
+#' @description
 #' Remove samples with fewer than n sequences
 #' as well as singletons, if any (shouldn't)
 #' @export
@@ -351,13 +362,16 @@ save_qplots <- function(plot_list, out_dir, step_id){
 
 # Taxonomy ----------------------------------------------------------------
 
-#' format DECIPHER output for dada2
+#' Format DECIPHER output for dada2
+#' 
+#' @description
+#' adapted from Adapted from https://benjjneb.github.io/dada2/tutorial.html
 #' @param ids output from  DECIPHER::IdTaxa
 #' @param seqtab sequence table that was passed to DECIPHER::IdTaxa
 #' @param ranks a vector describing the rank names to use, should start with 'rootrank'
 #' @export
 
-format_DECIPHER_for_dada2 <- function(ids, seqtab, ranks = NULL) {
+format_DECIPHER_for_dada2 <- function(ids, seqtab, ranks = c('rootrank', 'kingdom', 'phylum', 'class', 'order', 'family', 'genus')) {
   
   # If ranks not provided, extract them from the IdTaxa results
   if (is.null(ranks)) {
@@ -385,6 +399,9 @@ format_DECIPHER_for_dada2 <- function(ids, seqtab, ranks = NULL) {
     2)
   
   message(paste(perc_NA, '% of NAs'))
+  
+  colnames(taxonomy) <- stringr::str_to_sentence(ranks)
+  taxonomy <- taxonomy[,2:ncol(taxonomy)]
   
   return(taxid)
 }

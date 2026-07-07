@@ -1,4 +1,5 @@
 #' Compute sparsity from a matrix where samples are column
+#' 
 #' @param input matrix, tibble, data.frame or phyloseq object
 #' @export
 #' 

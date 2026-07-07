@@ -2,12 +2,10 @@
 % Please edit documentation in R/dada2_utils.R
 \name{run_cutadapt}
 \alias{run_cutadapt}
-\title{CUTADAPT wrapper function
-Adapted cutadapt in function to allow using it within mclapply}
+\title{CUTADAPT wrapper function}
 \usage{
 run_cutadapt(i, cutadapt_path, R1.flags, R2.flags)
 }
 \description{
-CUTADAPT wrapper function
 Adapted cutadapt in function to allow using it within mclapply
 }

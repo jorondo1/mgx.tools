@@ -1,7 +1,7 @@
 ---
 output: github_document
 ---
-
+ 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 ```{r, include = FALSE}
@@ -11,6 +11,8 @@ knitr::opts_chunk$set(
   fig.path = "man/figures/README-",
   out.width = "100%"
 )
+
+# pak::pkg_install("jorondo1/mgx.tools?reinstall", upgrade = TRUE)
 ```
 # mgx.tools
 
