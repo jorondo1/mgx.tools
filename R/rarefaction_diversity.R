@@ -73,7 +73,7 @@ rarefy_diversity <- function(
     set.seed(seed_start + i - 1)
     
     # -- Rarefy:
-    taxon_rare <- vegan::rrarefy(count_table, sample = depth)
+    taxon_rare <- suppressWarnings(vegan::rrarefy(count_table, sample = depth))
     
     # -- re-filter
     # a taxon can rarefy down to zero reads across all samples in a given draw.
@@ -146,6 +146,8 @@ rarefy_diversity <- function(
       out$beta$unifrac.w <- as.dist(gu$unifracs[, , "d_1"])
       out$beta$unifrac.u<-  as.dist(gu$unifracs[, , "d_UW"])
     }
+    
+    return(out)
     
   }
   
