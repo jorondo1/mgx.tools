@@ -2,9 +2,7 @@
 % Please edit documentation in R/dada2_utils.R
 \name{track_dada}
 \alias{track_dada}
-\title{Read tracker
-compile reads across samples in long format
-also computes changes between steps (last column flags this since format is long)}
+\title{Read tracker (deprecated)}
 \usage{
 track_dada(
   out.N,
@@ -17,7 +15,9 @@ track_dada(
 )
 }
 \description{
-Read tracker
+Superseded by \code{log_tracking()} + \code{track_dada2()}, which persist
+counts to disk incrementally instead of requiring every pipeline object to
+still be in memory at the end. Kept for backward compatibility.
 compile reads across samples in long format
 also computes changes between steps (last column flags this since format is long)
 }

@@ -22,11 +22,7 @@ rarefy_diversity <- function(
     mc.cores = parallel::detectCores(),
     vst = FALSE) {
   
-  # # Checks
-  # if (!mode %in% c('amplicon', 'metagenome')) {
-  #   stop("Mode must either be 'amplicon' or 'metagenome'")
-  # }
-  
+  ## 0. Checks
   # If phy tree
   if (is.null(phy_tree(ps, errorIfNULL = FALSE))){
     withPhyTree <- FALSE
@@ -38,14 +34,14 @@ rarefy_diversity <- function(
     }
   }
   
-  # extract counts, transpose if needed
+  ## 1. Extract counts, transpose if needed
   
   count_table <- as(phyloseq::otu_table(ps), 'matrix')
   if (phyloseq::taxa_are_rows(ps)) count_table <- t(count_table)
   
   depth <- depth %||% min(rowSums(count_table))
   
-  ## ---- Drop samples below depth & now-empty taxa ------------------------
+  ## 2. Drop samples below depth & now-empty taxa ------------------------
   # Filtering here (once) keeps ps, count_table, and n_samples consistent for
   # the rest of the function.
   
@@ -65,7 +61,7 @@ rarefy_diversity <- function(
   count_table <- count_table[keep_samples, keep_taxa]
   n_samples   <- nrow(count_table)
   
-  ## ---- 3. Per-iteration function: rarefy + alpha + beta ----------------------
+  ## 3. Per-iteration function: rarefy + alpha + beta ----------------------
   # Defined inside rarefy_diversity so it closes over ps, count_table, depth,
   # seed_start, n_samples, and vst.
   
@@ -151,7 +147,7 @@ rarefy_diversity <- function(
     
   }
   
-  ## ---- 4. Run all iterations (parallel) ------------------------------------
+  ## 4. Run all iterations (parallel) ------------------------------------
   
   # Exception if only one core
   plan_type <- if (mc.cores > 1) future::multisession else future::sequential
@@ -163,7 +159,7 @@ rarefy_diversity <- function(
     1:n_iter, rarefy_iter,
     .options = furrr::furrr_options(seed = TRUE)
   )
-  ## ---- 5. Extraction functions for iterations -----------------------
+  ## 5. Extraction functions for iterations -----------------------
   
   # - ALPHA
   extract_alpha_metric <- function(metric) {
@@ -190,7 +186,7 @@ rarefy_diversity <- function(
     return(fused_dist)
   }  
   
-  ## ---- 6. Aggregate diversity across iterations ----------------
+  ## 6. Aggregate diversity across iterations ----------------
   
   richness_mat <- extract_alpha_metric("richness")
   shannon_mat  <- extract_alpha_metric("shannon")
@@ -233,7 +229,7 @@ rarefy_diversity <- function(
     tibble::rownames_to_column('Sample') %>% 
     tibble::tibble()
   
-  ## ---- 7. Return -------------------------------------------------------
+  ## 7. Return -------------------------------------------------------
   
   list(
     alpha = alpha_tibble,

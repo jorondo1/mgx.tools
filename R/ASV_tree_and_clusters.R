@@ -166,13 +166,17 @@ cluster_ASVs_physeq <- function(
     # print full taxonomy of inconstintent clusters
     inconst_clust_taxonomy <- clusters %>% 
       dplyr::filter(Species_cluster %in% inconsistent_clusters) %>% 
-      dplyr::left_join(tax_table, by = join_by(Species_cluster, Genus)) %>% 
+      dplyr::left_join(tax_table, by = dplyr::join_by(Species_cluster, Genus)) %>% 
       dplyr::group_by(Species_cluster, Class, Order, Family, Genus) %>% 
       dplyr::summarise(n_ASVs = dplyr::n(), .groups = 'drop') 
     
     message(paste(length(inconsistent_clusters),'clusters span multiple genera. Excerpt:'))
     
-    print(kableExtra::kable(head(inconst_clust_taxonomy, n = 20)))
+    unique_clusters <- as.character(unique(inconst_clust_taxonomy$Species_cluster))
+    
+    assign("_problem_clusters", unique_clusters , envir = .GlobalEnv)
+    
+    print(kableExtra::kable(head(inconst_clust_taxonomy, n = 50)))
   }
 }
 

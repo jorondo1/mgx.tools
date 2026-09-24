@@ -4,7 +4,7 @@
 
 diversity_tibble <- function(ps) {
   result <- mgx.tools::samdat_as_tibble(ps)
-  
+  message('THIS FUNCTION is deprecated. Use the much more cool rarefy_diversity() function for rarefaction-based diversity estimation!')
   result <- result %>%
     dplyr::left_join(tibble::enframe(mgx.tools::estimate_Hill(ps, q = 0), name = "Sample", value = "Hill_0"), by = "Sample") %>%
     dplyr::left_join(tibble::enframe(mgx.tools::estimate_Hill(ps, q = 1), name = "Sample", value = "Hill_1"), by = "Sample") %>%

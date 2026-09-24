@@ -160,9 +160,9 @@ minimum_ASV_count <- function(seqtab.nochim){
   df <- data.frame(sequence_sum = seq(1:100),
                    asv_count = column_counts)
 
-  ggplot(df, aes(x = sequence_sum, y = asv_count)) +
-    geom_point() +
-    labs(title = 'ASV with minimum total sequence count',
+  ggplot2::ggplot(df, ggplot2::aes(x = sequence_sum, y = asv_count)) +
+    ggplot2::geom_point() +
+    ggplot2::labs(title = 'ASV with minimum total sequence count',
          x = 'Minimum number of sequences across all samples',
          y = 'ASV count',
          caption = 'Use this to find a conservative minimum below which to drop ASVs with fewer total sequence counts')
@@ -193,11 +193,133 @@ drop_rare_asvs <- function(seqtab.nochim, at_least_n) {
   return(filtered_samples)
 }
 
-#' Read counter
-#' @keywords internal
-.getN <- function(x) sum(getUniques(x))
+#' Count reads retained in a dada-class or mergePairs object
+#' @export
+getN <- function(x) sum(getUniques(x))
 
-#' Read tracker
+#' Log per-sample read counts for one pipeline step to a persistent tracking table
+#'
+#' @description
+#' Appends one pipeline step's read counts to a long-format tracking file on
+#' disk (creating it if needed), replacing any prior entry for the same step
+#' so re-running a step doesn't create duplicate rows. Because each step logs
+#' its own counts immediately after computing them, the final read-tracking
+#' summary (see \code{track_dada2()}) never depends on objects from earlier
+#' steps still being in memory or on the pipeline never having been
+#' interrupted -- only on this file having accumulated on disk.
+#' @param step character label for this step, e.g. "input", "filtered", "denoisedF"
+#' @param counts named numeric vector of read counts per sample. If unnamed,
+#'   \code{sample.names} must be supplied, assumed to be in the same order.
+#' @param sample.names optional sample name vector, used only if counts is unnamed
+#' @param path path to the tracking tsv (created on first call)
+#' @export
+
+log_tracking <- function(step, counts, sample.names = NULL, path) {
+  if (is.null(names(counts))) {
+    if (is.null(sample.names)) {
+      stop("counts has no names; provide sample.names.", call. = FALSE)
+    }
+    names(counts) <- sample.names
+  }
+
+  new_rows <- tibble::tibble(
+    Sample = names(counts),
+    step   = step,
+    reads  = as.numeric(counts)
+  )
+
+  if (file.exists(path)) {
+    existing <- readr::read_tsv(path, show_col_types = FALSE)
+    new_rows <- dplyr::bind_rows(
+      dplyr::filter(existing, step != !!step),
+      new_rows
+    )
+  }
+
+  readr::write_tsv(new_rows, path)
+  message("Tracked '", step, "': ", length(counts), " samples logged to ", path)
+  invisible(new_rows)
+}
+
+#' Build a read-tracking summary from a persisted tracking table
+#'
+#' @description
+#' Drop-in replacement for \code{track_dada()} that reads exclusively from
+#' the file written incrementally by \code{log_tracking()}, so it works
+#' regardless of which pipeline objects are still in memory or which step a
+#' possibly-interrupted session last completed. Returns the same list
+#' structure as \code{track_dada()}, so \code{plot_track_change()} needs no
+#' changes.
+#' @param path path to the tracking tsv written by \code{log_tracking()}
+#' @export
+
+track_dada2 <- function(path) {
+  step_levels <- c("input", "removeNs", "filtered",
+                    "denoisedF", "denoisedR", "raw_seqtab", "nonchim")
+
+  wide <- readr::read_tsv(path, show_col_types = FALSE) %>%
+    dplyr::filter(step %in% step_levels) %>%
+    tidyr::pivot_wider(names_from = step, values_from = reads)
+
+  missing_steps <- setdiff(step_levels, names(wide))
+  if (length(missing_steps) > 0) {
+    stop("Tracking file is missing step(s): ", paste(missing_steps, collapse = ", "),
+         ". Have you run every pipeline stage yet?", call. = FALSE)
+  }
+
+  tibble_out <- wide %>%
+    dplyr::mutate(
+      Nfilt_lost         = (input - removeNs)     / input,
+      filterAndTrim_lost = (removeNs - filtered)   / removeNs,
+      denoising_lost_F   = (filtered - denoisedF)  / filtered,
+      denoising_lost_R   = (filtered - denoisedR)  / filtered,
+      merging_lost_F     = (denoisedF - raw_seqtab) / denoisedF,
+      merging_lost_R     = (denoisedR - raw_seqtab) / denoisedR,
+      bimera_lost        = (raw_seqtab - nonchim)  / raw_seqtab
+    ) %>%
+    tidyr::pivot_longer(where(is.numeric), names_to = "variable", values_to = "values")
+
+  list(
+    counts_per_step = tibble_out %>% dplyr::filter(!stringr::str_detect(variable, "_lost")),
+    lost_per_step   = tibble_out %>% dplyr::filter(stringr::str_detect(variable, "_lost"))
+  )
+}
+
+#' Checkpoint an object to disk under a predictable filename
+#'
+#' @description
+#' Thin wrapper around \code{readr::write_rds()} that saves an object under a
+#' consistent name inside a checkpoint directory, so a heavy stage's output
+#' can be reloaded with \code{load_checkpoint()} instead of recomputed if a
+#' session is interrupted.
+#' @param x object to save
+#' @param name short identifier, e.g. "errF"; becomes "<name>.RDS"
+#' @param dir checkpoint directory (created if it doesn't exist)
+#' @export
+checkpoint <- function(x, name, dir) {
+  if (!dir.exists(dir)) dir.create(dir, recursive = TRUE)
+  path <- file.path(dir, paste0(name, ".RDS"))
+  readr::write_rds(x, path, compress = "gz")
+  message("Checkpointed '", name, "' -> ", path)
+  invisible(path)
+}
+
+#' Reload an object saved with checkpoint()
+#' @param name short identifier used when checkpointing, e.g. "errF"
+#' @param dir checkpoint directory
+#' @export
+load_checkpoint <- function(name, dir) {
+  path <- file.path(dir, paste0(name, ".RDS"))
+  if (!file.exists(path)) stop("No checkpoint found at ", path, call. = FALSE)
+  readr::read_rds(path)
+}
+
+#' Read tracker (deprecated)
+#'
+#' @description
+#' Superseded by \code{log_tracking()} + \code{track_dada2()}, which persist
+#' counts to disk incrementally instead of requiring every pipeline object to
+#' still be in memory at the end. Kept for backward compatibility.
 #' compile reads across samples in long format
 #' also computes changes between steps (last column flags this since format is long)
 #' @export
@@ -209,11 +331,11 @@ track_dada <- function(out.N, out, sample.names,
   track <- cbind(out.N, out[,2])
   rownames(track) <- sample.names
   track <- track[which(track[,3]>0),]
-  track <- cbind(track, sapply(dadaFs, .getN))
+  track <- cbind(track, sapply(dadaFs, getN))
 
   # Conditionally add dadaRs column if it exists
   if(!is.null(dadaRs)) {
-    track <- cbind(track, sapply(dadaRs, .getN))
+    track <- cbind(track, sapply(dadaRs, getN))
     column_names <- c("input", "removeNs", "filtered", "denoisedF", "denoisedR", "raw_seqtab", "nonchim")
   } else {
     column_names <- c("input", "removeNs", "filtered", "denoisedF", "raw_seqtab", "nonchim")

@@ -2,13 +2,14 @@
 #' @export
 topTaxa <- function(psmelt, taxLvl, topN) {
   psmelt |>
-    group_by(!!sym(taxLvl)) |> # group by tax level
-    filter(relAb != 'NaN') |>
-    summarise(relAb = mean(relAb)) |> # find top abundant taxa
-    arrange(desc(relAb)) |>
-    mutate(aggTaxo = as.factor(case_when( # aggTaxo will become the plot legend
-      row_number() <= topN ~ !!sym(taxLvl), #+++ We'll need to manually order the species!
-      row_number() > topN ~ 'Others'))) # +1 to include the Others section!
+    dplyr::group_by(!!rlang::sym(taxLvl)) |> # group by tax level
+    dplyr::filter(relAb != 'NaN') |>
+    dplyr::summarise(relAb = mean(relAb)) |> # find top abundant taxa
+    dplyr::arrange(desc(relAb)) |>
+    dplyr::mutate(aggTaxo = as.factor(
+      dplyr::case_when( # aggTaxo will become the plot legend
+        row_number() <= topN ~ !!sym(taxLvl), #+++ We'll need to manually order the species!
+        row_number() > topN ~ 'Others'))) # +1 to include the Others section!
 }
 
 #' Community-plot data from a melted phyloseq object

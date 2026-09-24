@@ -37,7 +37,7 @@ rarefy_even_depth2 <- function (
     stop("sample.size must be positive.")
   }
 
-  if (min(sample_sums(physeq)) < sample.size) {
+  if (min(phyloseq::sample_sums(physeq)) < sample.size) {
     rmsamples <- phyloseq::sample_names(physeq)[phyloseq::sample_sums(physeq) < sample.size]
     if (verbose) {
       message(length(rmsamples), " samples removed because they contained fewer reads than `sample.size`.")
@@ -48,7 +48,7 @@ rarefy_even_depth2 <- function (
   # --- Parallel Rarefaction ---
   newsub <- physeq
   # Ensure taxa are rows for easy column-wise operation
-  if (!taxa_are_rows(newsub)) {
+  if (!phyloseq::taxa_are_rows(newsub)) {
     newsub <- phyloseq::t(newsub)
   }
 
@@ -75,7 +75,7 @@ rarefy_even_depth2 <- function (
 
   # --- OTU Trimming and Finalization (same as original) ---
   if (trimOTUs) {
-    rmtaxa <- taxa_names(newsub)[taxa_sums(newsub) <= 0]
+    rmtaxa <- phyloseq::taxa_names(newsub)[phyloseq::taxa_sums(newsub) <= 0]
     if (length(rmtaxa) > 0) {
       if (verbose) {
         message(length(rmtaxa), " OTUs were removed because they are no longer ",
@@ -86,7 +86,7 @@ rarefy_even_depth2 <- function (
   }
 
   # Return to original orientation if necessary
-  if (!taxa_are_rows(physeq)) {
+  if (!phyloseq::taxa_are_rows(physeq)) {
     newsub <- phyloseq::t(newsub)
   }
 
