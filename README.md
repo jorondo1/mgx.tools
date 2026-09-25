@@ -21,30 +21,30 @@ rare-ASV reports, and formatting DECIPHER taxonomy for DADA2. Includes a
 read-tracking system that logs counts to disk after each step and plots
 where reads were lost, and checkpoints to save and resume the pipeline.
 
-**Building and tidying phyloseq objects.** Assembling a phyloseq object
-from shotgun taxonomic profiles (e.g. MetaPhlAn, Kraken), subsetting
+### Building and tidying phyloseq objects.
+Assembling a phyloseq object from shotgun taxonomic profiles (e.g. MetaPhlAn, Kraken), subsetting
 samples and taxa, dropping ultra-rare taxa, inspecting sequencing depth
 and sparsity.
 
-**Phyloseq function rewrites.** Alternatives to `rarefy_even_depth()`
-(parallelised and reproducible), `psmelt()` (much faster, drops
+### Phyloseq function rewrites.
+Alternatives to `rarefy_even_depth()` (parallelised and reproducible), `psmelt()` (much faster, drops
 zero-abundance rows) and `tax_glom()` (names agglomerated taxa after
 their rank instead of an arbitrary ASV).
 
-**Diversity.** Iterative rarefaction to estimate alpha diversity (Hill
+### Diversity.
+
+Iterative rarefaction to estimate alpha diversity (Hill
 numbers, Faith PD) and beta diversity (Bray-Curtis, robust Aitchison,
 UniFrac) in a single call, plus rarefaction curves, variance-stabilizing
 transformation and PCoA.
 
-**Taxonomy and phylogeny.** Building ASV phylogenetic trees, clustering
+### Taxonomy and phylogeny.
+Building ASV phylogenetic trees, clustering
 ASVs by phylogenetic distance to bridge the gap between genus and ASV,
 and computing classification rates across taxonomic ranks.
 
-**Community composition plots.** Preparing data for stacked barplots,
-with the top taxa kept and the rest grouped as “Others”.
-
-Every function is documented in its help page
-(e.g. `?rarefy_diversity`).
+### Community composition plots.
+Preparing data for stacked barplots of relative abundances averaged over selected metadata
 
 ## Installation
 
