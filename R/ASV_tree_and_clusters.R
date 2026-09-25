@@ -176,7 +176,11 @@ cluster_ASVs_physeq <- function(
     
     assign("_problem_clusters", unique_clusters , envir = .GlobalEnv)
     
-    print(kableExtra::kable(head(inconst_clust_taxonomy, n = 50)))
+    if (requireNamespace("kableExtra", quietly = TRUE)) {
+      print(kableExtra::kable(head(inconst_clust_taxonomy, n = 50)))
+    } else {
+      print(head(inconst_clust_taxonomy, n = 50))
+    }
   }
 }
 

@@ -4,7 +4,11 @@
 # mgx.tools
 
 Helper functions for metagenomics and amplicon sequencing processing in
-R. Goes from raw reads to phyloseq object, with parallelized rewrites of
+R.
+
+This package relies on phyloseq objects.
+
+Goes from raw reads to phyloseq object, with parallelized rewrites of
 common functions and utilities for informed filtering decisions.
 
 ## Dependencies
@@ -22,7 +26,8 @@ BiocManager::install(c(
     "DESeq2",
     "phyloseq",
     "ShortRead",
-    "SummarizedExperiment"
+    "SummarizedExperiment",
+    "tidyverse"
 ))
 ```
 

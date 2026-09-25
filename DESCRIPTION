@@ -1,13 +1,13 @@
 Package: mgx.tools
 Type: Package
-Title: helper functions for metagenomics and amplicon sequencing processing
+Title: Helper Functions for Metagenomics and Amplicon Sequencing Processing
 Version: 0.1.0
 Depends: R (>= 4.1.0)
 Authors@R: c(
     person(
       "Jonathan", "Rondeau-Leclaire",
       email = "jonathan.rondeau.leclaire@gmail.com",
-      role = "cre"
+      role = c("aut", "cre")
     )
   )
 Description: This package contains multiple helper functions for processing
@@ -28,12 +28,17 @@ Imports: ape,
           dplyr,
           dada2,
           foreach,
+          furrr,
+          future,
           ggplot2,
           ggrain,
           ggdendro,
+          graphics,
+          grDevices,
           GUniFrac,
           magrittr,
           matrixStats,
+          methods,
           parallel,
           phangorn,
           phyloseq,
@@ -43,8 +48,16 @@ Imports: ape,
           rlang,
           ShortRead,
           stringr,
+          stats,
           SummarizedExperiment,
           tibble,
           tidyr,
+          utils,
           vegan
+Suggests: btools,
+          data.table,
+          kableExtra
+Remotes: twbattaglia/btools
+URL: https://github.com/jorondo1/mgx.tools
+BugReports: https://github.com/jorondo1/mgx.tools/issues
 Config/roxygen2/version: 8.1.0

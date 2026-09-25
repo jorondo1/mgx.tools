@@ -14,7 +14,7 @@ sparsity <- function(input){
       dplyr::select(where(is.double))
   } 
   
-  else if ( class(input) == "phyloseq" ) {
+  else if ( inherits(input, "phyloseq") ) {
     seqtab <- phyloseq::otu_table(input) %>% 
       as("matrix")
     if( ! phyloseq::taxa_are_rows(input) ) {

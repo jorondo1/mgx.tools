@@ -400,7 +400,7 @@ plot_track_change <- function(track_change, reverse = FALSE) {
   }
   p2 <- track_change[['lost_per_step']] %>%
     filter(variable %in% lost_levels) %>%
-    dplyr::mutate(variable = factor(variable,level = lost_levels)) %>%
+    dplyr::mutate(variable = factor(variable, levels = lost_levels)) %>%
     ggplot2::ggplot(aes(y = variable, x = values)) +
     ggplot2::geom_jitter(height = 0.2, width =0) +
     ggplot2::labs(

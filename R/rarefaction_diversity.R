@@ -21,13 +21,17 @@ rarefy_diversity <- function(
     n_iter = 100, 
     mc.cores = parallel::detectCores(),
     vst = FALSE) {
-  
+
   ## 0. Checks
   # If phy tree
   if (is.null(phy_tree(ps, errorIfNULL = FALSE))){
     withPhyTree <- FALSE
   } else {
     withPhyTree <- TRUE
+    if (!requireNamespace("btools", quietly = TRUE)) {
+      stop("Package 'btools' is needed for Faith PD on phyloseq objects with a tree.\n",
+           "Install it with: pak::pkg_install('twbattaglia/btools')", call. = FALSE)
+    }
     # Root tree if necessary
     if (!ape::is.rooted(phyloseq::phy_tree(ps))) {
       phyloseq::phy_tree(ps) <- phangorn::midpoint(phyloseq::phy_tree(ps))

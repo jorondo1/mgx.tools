@@ -16,7 +16,10 @@ knitr::opts_chunk$set(
 ```
 # mgx.tools
 
-Helper functions for metagenomics and amplicon sequencing processing in R.
+Helper functions for metagenomics and amplicon sequencing processing in R. 
+
+This package relies on phyloseq objects. 
+
 Goes from raw reads to phyloseq object, with parallelized rewrites of common
 functions and utilities for informed filtering decisions.
 
@@ -35,7 +38,8 @@ BiocManager::install(c(
     "DESeq2",
     "phyloseq",
     "ShortRead",
-    "SummarizedExperiment"
+    "SummarizedExperiment",
+    "tidyverse"
 ))
 ```
 
