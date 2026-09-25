@@ -1,3 +1,8 @@
+# mgx.tools 0.1.1
+
+* Rewrote README: overview by function category, installation and
+  dependency notes, citation.
+
 # mgx.tools 0.1.0
 
 * First tagged release.

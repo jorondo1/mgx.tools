@@ -1,7 +1,7 @@
 Package: mgx.tools
 Type: Package
 Title: Helper Functions for Metagenomics and Amplicon Sequencing Processing
-Version: 0.1.0
+Version: 0.1.1
 Depends: R (>= 4.1.0)
 Authors@R: c(
     person(
