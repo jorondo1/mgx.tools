@@ -40,3 +40,13 @@ utils::globalVariables(c(
   }
   get(name, envir = globalenv())
 }
+
+# Check optional (Suggests) dependencies. Interactively, offers to install the
+# missing ones with pak, which handles CRAN and Bioconductor packages;
+# otherwise errors with the package names.
+.check_suggests <- function(pkgs, reason) {
+  rlang::check_installed(pkgs, reason = reason, action = function(pkgs, ...) {
+    if (!rlang::is_installed("pak")) utils::install.packages("pak")
+    pak::pkg_install(pkgs)
+  })
+}

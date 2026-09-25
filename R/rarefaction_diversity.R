@@ -28,16 +28,18 @@ rarefy_diversity <- function(
     withPhyTree <- FALSE
   } else {
     withPhyTree <- TRUE
-    if (!requireNamespace("btools", quietly = TRUE)) {
-      stop("Package 'btools' is needed for Faith PD on phyloseq objects with a tree.\n",
-           "Install it with: pak::pkg_install('twbattaglia/btools')", call. = FALSE)
-    }
+    .check_suggests(c("phangorn", "GUniFrac", "picante"),
+                    "for Faith PD and UniFrac on phyloseq objects with a tree.")
     # Root tree if necessary
     if (!ape::is.rooted(phyloseq::phy_tree(ps))) {
       phyloseq::phy_tree(ps) <- phangorn::midpoint(phyloseq::phy_tree(ps))
     }
   }
   
+  # Checked here rather than inside the parallel workers
+  if (vst) .check_suggests(c("DESeq2", "SummarizedExperiment"),
+                          "for the variance-stabilizing transformation.")
+
   ## 1. Extract counts, transpose if needed
   
   count_table <- as(phyloseq::otu_table(ps), 'matrix')
@@ -135,7 +137,7 @@ rarefy_diversity <- function(
     
     if(withPhyTree) {
       # Faith PD: 
-      faith_res <- suppressWarnings(suppressMessages(btools::estimate_pd(ps_rare)))
+      faith_res <- picante::pd(taxon_rare, phyloseq::phy_tree(ps_rare), include.root = FALSE)
       
       # Unifrac 
       gu <- suppressWarnings(
@@ -154,8 +156,11 @@ rarefy_diversity <- function(
   ## 4. Run all iterations (parallel) ------------------------------------
   
   # Exception if only one core
-  plan_type <- if (mc.cores > 1) future::multisession else future::sequential
-  future::plan(plan_type, workers = mc.cores)
+  if (mc.cores > 1) {
+    future::plan(future::multisession, workers = mc.cores)
+  } else {
+    future::plan(future::sequential)
+  }
   on.exit(future::plan(future::sequential), add = TRUE)
   
   # Loop 

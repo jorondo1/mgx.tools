@@ -9,9 +9,7 @@
 #' @param physeq a phyloseq object
 #' @export
 psflashmelt <- function(physeq) {
-  if (!requireNamespace("data.table", quietly = TRUE)) {
-    stop("Package 'data.table' needed for this function. Please install it.")
-  }
+  .check_suggests("data.table", "to use psflashmelt().")
 
   if (!inherits(physeq, "phyloseq")) {
     rankNames = NULL

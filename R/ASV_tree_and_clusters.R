@@ -6,7 +6,9 @@
 ASV_tree_for_physeq <- function(
     physeq, 
     ncores = parallel::detectCores() ) {
-  
+
+  .check_suggests(c("DECIPHER", "phangorn"), "to build a phylogenetic tree.")
+
   # Get ASVs
   original_asv_names <- phyloseq::taxa_names(physeq)  # save original names
   seqs <- Biostrings::DNAStringSet(colnames(phyloseq::otu_table(physeq)))
@@ -92,6 +94,7 @@ cluster_ASVs_physeq <- function(
 #' @keywords internal
 .dendro_plot <- function(hc, threshold) {
   
+  .check_suggests("ggdendro", "to plot the ASV cluster dendrogram.")
   dendro_data <- ggdendro::dendro_data(hc, type = "rectangle")
   
   p <- ggplot2::ggplot(dendro_data$segments) +
