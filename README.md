@@ -14,8 +14,8 @@ may still change.
 
 ## What’s in it
 
-**DADA2 pipeline helpers.** Support for each step of the
-[DADA2](https://benjjneb.github.io/dada2/) workflow: checking primer
+### DADA2 pipeline helpers.
+Support for each step of the [DADA2](https://benjjneb.github.io/dada2/) workflow: checking primer
 orientation, running cutadapt in parallel, quality plots, chimera and
 rare-ASV reports, and formatting DECIPHER taxonomy for DADA2. Includes a
 read-tracking system that logs counts to disk after each step and plots
