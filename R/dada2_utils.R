@@ -80,9 +80,20 @@ primer_occurence <- function(fnFs, fnRs, FWD, REV, ncores = NULL){
 #' CUTADAPT wrapper function
 #' 
 #' @description
-#' Adapted cutadapt in function to allow using it within mclapply
+#' Adapted cutadapt in function to allow using it within mclapply.
+#' The four file path vectors default to objects of the same name in the
+#' global environment; pass them explicitly to avoid relying on that.
+#' @param i index of the sample to process
+#' @param cutadapt_path path to the cutadapt executable
+#' @param R1.flags,R2.flags primer trimming flags for R1 and R2 (e.g. `c("-g", FWD, "-a", REV.RC)`)
+#' @param fnFs.cut,fnRs.cut output paths for trimmed R1 and R2 reads
+#' @param fnFs.filtN,fnRs.filtN input paths for R1 and R2 reads
 #' @export
-run_cutadapt <- function(i, cutadapt_path, R1.flags, R2.flags) {
+run_cutadapt <- function(i, cutadapt_path, R1.flags, R2.flags,
+                         fnFs.cut = .from_global("fnFs.cut", "run_cutadapt"),
+                         fnRs.cut = .from_global("fnRs.cut", "run_cutadapt"),
+                         fnFs.filtN = .from_global("fnFs.filtN", "run_cutadapt"),
+                         fnRs.filtN = .from_global("fnRs.filtN", "run_cutadapt")) {
   # Check cutadapt exists
   cutadapt_check <- suppressWarnings(
     system2(cutadapt_path, args = "--version", stdout = TRUE, stderr = TRUE)
@@ -113,6 +124,8 @@ run_cutadapt <- function(i, cutadapt_path, R1.flags, R2.flags) {
 #' @description
 #' Filtering with minlen may yield empty samples (e.g. neg. controls);
 #' list files that did survive filtering:
+#' @param path_list character vector of expected output file paths
+#' @return `path_list` without the missing files
 #' @export
 
 dropped_samples <- function(path_list) {
@@ -129,6 +142,8 @@ dropped_samples <- function(path_list) {
 }
 
 #' Report chimera rate and reads
+#' @param seqtab sequence table before chimera removal (samples as rows)
+#' @param seqtab.nochim sequence table after chimera removal
 #' @export
 chimera_report <- function(seqtab, seqtab.nochim) {
   ASV1 <- ncol(seqtab)
@@ -145,6 +160,7 @@ chimera_report <- function(seqtab, seqtab.nochim) {
 
 
 #' Plot ASV counts with minimum sequence count
+#' @param seqtab.nochim sequence table (samples as rows)
 #' @export
 minimum_ASV_count <- function(seqtab.nochim){
   # Loop through n from 0 to k
@@ -173,6 +189,8 @@ minimum_ASV_count <- function(seqtab.nochim){
 #' @description
 #' Remove samples with fewer than n sequences
 #' as well as singletons, if any (shouldn't)
+#' @param seqtab.nochim sequence table (samples as rows)
+#' @param at_least_n minimum total count for an ASV to be kept
 #' @export
 drop_rare_asvs <- function(seqtab.nochim, at_least_n) {
   filtered_ASV <- seqtab.nochim[ , colSums(seqtab.nochim) >= at_least_n , drop = FALSE]
@@ -194,6 +212,7 @@ drop_rare_asvs <- function(seqtab.nochim, at_least_n) {
 }
 
 #' Count reads retained in a dada-class or mergePairs object
+#' @param x a dada-class or mergePairs object
 #' @export
 getN <- function(x) sum(getUniques(x))
 
@@ -322,11 +341,19 @@ load_checkpoint <- function(name, dir) {
 #' still be in memory at the end. Kept for backward compatibility.
 #' compile reads across samples in long format
 #' also computes changes between steps (last column flags this since format is long)
+#' @param out.N `filterAndTrim()` output from the N-removal step
+#' @param out `filterAndTrim()` output from the quality filtering step
+#' @param sample.names sample names, in the same order as `out.N`
+#' @param dadaFs,dadaRs `dada()` outputs for forward and reverse reads (`dadaRs = NULL` for single-end)
+#' @param mergers_pooled unused; kept for backward compatibility
+#' @param seqtab.nochim sequence table after chimera removal; defaults to `seqtab.nochim` in the global environment
+#' @param seqtab sequence table before chimera removal; defaults to `seqtab` in the global environment
 #' @export
 track_dada <- function(out.N, out, sample.names,
                        dadaFs, dadaRs = NULL,
-                       mergers_pooled = mergers_pooled,
-                       seqtab.nochim = seqtab.nochim) {
+                       mergers_pooled = NULL,
+                       seqtab.nochim = .from_global("seqtab.nochim", "track_dada"),
+                       seqtab = .from_global("seqtab", "track_dada")) {
 
   track <- cbind(out.N, out[,2])
   rownames(track) <- sample.names
@@ -375,6 +402,8 @@ track_dada <- function(out.N, out, sample.names,
 
 
 #' Plot track changes
+#' @param track_change output of `track_dada()` or `track_dada2()`
+#' @param reverse whether reverse reads were denoised (paired-end)
 #' @export
 plot_track_change <- function(track_change, reverse = FALSE) {
 

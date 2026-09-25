@@ -20,14 +20,23 @@
 #' @importFrom grDevices colorRampPalette
 NULL
 
-# Column names used in tidy evaluation, plus objects that run_cutadapt() and
-# track_dada() deliberately read from the calling environment.
+# Column names used in tidy evaluation.
 utils::globalVariables(c(
   ".", "Abundance", "aggTaxo", "asv_count", "Class", "Classification_rate",
   "classified", "denoisedF", "denoisedR", "Family", "filtered", "Genus", "i",
   "input", "Kingdom", "label", "nonchim", "Order", "OTU", "Phylum",
   "raw_seqtab", "reads", "relAb", "removeNs", "Sample", "sequence_sum",
   "Species_cluster", "step", "tax1", "taxColour", "taxRank", "values",
-  "variable", "x", "xend", "y", "yend",
-  "fnFs.cut", "fnRs.cut", "fnFs.filtN", "fnRs.filtN", "seqtab"
+  "variable", "x", "xend", "y", "yend"
 ))
+
+# Default for arguments that older pipelines supplied via global variables.
+# Errors clearly if the object doesn't exist instead of failing deep inside.
+.from_global <- function(name, caller) {
+  if (!exists(name, envir = globalenv())) {
+    stop("`", name, "` was not supplied and no object of that name exists in ",
+         "the global environment. Pass it as an argument to ", caller, "().",
+         call. = FALSE)
+  }
+  get(name, envir = globalenv())
+}

@@ -1,5 +1,5 @@
 #' Takes a phyloseq object as input and creates a tibble containing all the sample data and one column per index.
-#' @param physeq a phyloseq object
+#' @param ps a phyloseq object
 #' @export
 
 diversity_tibble <- function(ps) {

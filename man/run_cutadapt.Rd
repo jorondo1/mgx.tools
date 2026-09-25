@@ -4,8 +4,30 @@
 \alias{run_cutadapt}
 \title{CUTADAPT wrapper function}
 \usage{
-run_cutadapt(i, cutadapt_path, R1.flags, R2.flags)
+run_cutadapt(
+  i,
+  cutadapt_path,
+  R1.flags,
+  R2.flags,
+  fnFs.cut = .from_global("fnFs.cut", "run_cutadapt"),
+  fnRs.cut = .from_global("fnRs.cut", "run_cutadapt"),
+  fnFs.filtN = .from_global("fnFs.filtN", "run_cutadapt"),
+  fnRs.filtN = .from_global("fnRs.filtN", "run_cutadapt")
+)
+}
+\arguments{
+\item{i}{index of the sample to process}
+
+\item{cutadapt_path}{path to the cutadapt executable}
+
+\item{R1.flags, R2.flags}{primer trimming flags for R1 and R2 (e.g. `c("-g", FWD, "-a", REV.RC)`)}
+
+\item{fnFs.cut, fnRs.cut}{output paths for trimmed R1 and R2 reads}
+
+\item{fnFs.filtN, fnRs.filtN}{input paths for R1 and R2 reads}
 }
 \description{
-Adapted cutadapt in function to allow using it within mclapply
+Adapted cutadapt in function to allow using it within mclapply.
+The four file path vectors default to objects of the same name in the
+global environment; pass them explicitly to avoid relying on that.
 }

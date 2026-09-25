@@ -14,6 +14,21 @@ rarefy_even_depth2(
   ncores = parallel::detectCores() - 1
 )
 }
+\arguments{
+\item{physeq}{a phyloseq object}
+
+\item{sample.size}{depth to rarefy to; samples below it are dropped}
+
+\item{rngseed}{numeric seed for reproducible subsampling, or FALSE}
+
+\item{replace}{subsample with replacement}
+
+\item{trimOTUs}{remove taxa with zero counts after rarefying}
+
+\item{verbose}{print messages}
+
+\item{ncores}{number of cores to use}
+}
 \description{
 Parallelize phyloseq's rarefaction function with reproducible results
 }

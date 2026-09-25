@@ -8,6 +8,10 @@ viz_seqdepth(seqtab, breaks = 100, log_count = FALSE)
 }
 \arguments{
 \item{seqtab}{matrix sequence table with samples as rows}
+
+\item{breaks}{number of histogram breaks}
+
+\item{log_count}{plot log10 of sample counts}
 }
 \description{
 Visualise sequence count distribution across samples

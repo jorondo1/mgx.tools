@@ -6,6 +6,11 @@
 \usage{
 drop_rare_asvs(seqtab.nochim, at_least_n)
 }
+\arguments{
+\item{seqtab.nochim}{sequence table (samples as rows)}
+
+\item{at_least_n}{minimum total count for an ASV to be kept}
+}
 \description{
 Remove samples with fewer than n sequences
 as well as singletons, if any (shouldn't)

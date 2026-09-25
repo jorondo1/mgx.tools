@@ -9,3 +9,8 @@
   `rarefy_diversity()`.
 * `btools` (Faith PD in `rarefy_diversity()`), `data.table` (`psflashmelt()`)
   and `kableExtra` are optional (Suggests).
+* `run_cutadapt()` gains `fnFs.cut`, `fnRs.cut`, `fnFs.filtN`, `fnRs.filtN`
+  and `track_dada()` gains `seqtab`. They default to the global objects of the
+  same name (as before) but error clearly if those don't exist.
+  `track_dada()`'s `seqtab.nochim` default no longer self-references.
+* All exported function arguments are now documented.

@@ -6,6 +6,11 @@
 \usage{
 plot_track_change(track_change, reverse = FALSE)
 }
+\arguments{
+\item{track_change}{output of `track_dada()` or `track_dada2()`}
+
+\item{reverse}{whether reverse reads were denoised (paired-end)}
+}
 \description{
 Plot track changes
 }

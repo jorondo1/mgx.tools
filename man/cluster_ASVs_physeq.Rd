@@ -9,9 +9,9 @@ cluster_ASVs_physeq(physeq, hclust.method = "complete", threshold = 0.03)
 \arguments{
 \item{physeq}{a phyloseq object with tree data}
 
-\item{threshold}{the phylogenetic distance threshold passed to}
+\item{hclust.method}{agglomeration method passed to `stats::hclust()`}
 
-\item{export_dir}{directory where to export dendogram as well as taxonomy-cluster consistency plot}
+\item{threshold}{phylogenetic distance at which to cut the tree into clusters (0.03 = 97\% similarity)}
 }
 \description{
 Adds a column to taxonomy, bridging the Genus-ASV gap for amplicons where the taxonomy is usually unresolved at Species level

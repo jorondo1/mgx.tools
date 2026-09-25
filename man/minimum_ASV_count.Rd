@@ -6,6 +6,9 @@
 \usage{
 minimum_ASV_count(seqtab.nochim)
 }
+\arguments{
+\item{seqtab.nochim}{sequence table (samples as rows)}
+}
 \description{
 Plot ASV counts with minimum sequence count
 }

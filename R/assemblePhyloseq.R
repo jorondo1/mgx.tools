@@ -4,13 +4,15 @@
 #' from a table that contains both taxonomy and sample identifiers in the columns
 #' Tailored to work with the tibble-format output of parse_*() functions (mgx.tools package under development)
 
-#' @param abundTable wide tibble with taxonomic ranks and sample IDs as column; one species (or ASV) per row
+#' @param abunTable wide tibble with taxonomic ranks and sample IDs as column; one species (or ASV) per row
 #' @param sampleData data frame with sample data and matching sample IDs as row names
 #' @param filtering default FALSE; deprecated
 #' @param min_sample_size default 100; samples with fewer sequences are discarded
 #' @param unique_taxa_ID default "Species"; Column name containing unique taxa IDs. For shotgun (Metaphlan, Kraken, etc.), usually "Species".
 #' @param min_taxa_count default 1; taxa with fewer sequences overall (sum of all samples) are removed
 #' @param justBacteria default FALSE; filter to keep only bacteria counts
+#' @param onlySpecies default FALSE; if TRUE, taxonomy table keeps only the `unique_taxa_ID` column
+#' @param seqdepth_plot default TRUE; plot the per-sample sequence depth histogram
 #' @export
 assemble_phyloseq <- function(
     abunTable, sampleData,

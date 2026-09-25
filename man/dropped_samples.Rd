@@ -6,6 +6,12 @@
 \usage{
 dropped_samples(path_list)
 }
+\arguments{
+\item{path_list}{character vector of expected output file paths}
+}
+\value{
+`path_list` without the missing files
+}
 \description{
 Filtering with minlen may yield empty samples (e.g. neg. controls);
 list files that did survive filtering:

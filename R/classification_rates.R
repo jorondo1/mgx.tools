@@ -53,6 +53,8 @@
 }
 
 #' Call the .compute_classrate() function over lists of ps objects if pertinent
+#' @param ps a phyloseq object, or a named list of them (names become the `Dataset` column)
+#' @param ranks taxonomic ranks to compute classification rates for
 #' @export
 compute_classification_rates <- function(
     ps,
@@ -71,6 +73,7 @@ compute_classification_rates <- function(
 }
 
 #' Plot classification rates
+#' @param classrates output of `compute_classification_rates()`
 #' @export 
 
 plot_class_rates <- function(classrates){
@@ -80,14 +83,12 @@ plot_class_rates <- function(classrates){
     ggplot2::geom_boxplot() +
     ggplot2::ylim(0,NA)+
     ggplot2::scale_colour_brewer(palette = 'Set2') +
-    ggplot2::theme_light() +
     ggplot2::labs(y = 'Proportion of taxonomically labelled ASVs',
          colour = 'Taxonomic rank') +
     ggplot2::theme(
       axis.ticks.x = ggplot2::element_blank(),
       axis.title.x = ggplot2::element_blank(),
-      legend.position = 'none',
-      strip.text = ggplot2::element_text(color = "black",size = 14,face = "bold")) 
+      legend.position = 'none') 
   
   if ("Dataset" %in% names(classrates)) {
     p <- p + ggplot2::facet_grid(Dataset ~ proportion_type)

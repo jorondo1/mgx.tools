@@ -1,4 +1,7 @@
 #' find top N taxa and generate a tibble of taxa with Others category
+#' @param psmelt melted phyloseq data with a `relAb` column
+#' @param taxLvl taxonomic rank to aggregate at (e.g. "Genus")
+#' @param topN number of taxa to keep before lumping into "Others"
 #' @export
 topTaxa <- function(psmelt, taxLvl, topN) {
   psmelt |>
@@ -18,6 +21,12 @@ topTaxa <- function(psmelt, taxLvl, topN) {
 #' long df prepared for barchart visualisation of community members
 #' generates an "others" category for a specified number of taxa
 #' at desired taxonomic rank
+#' @param melted_ps output of `phyloseq::psmelt()` or `psflashmelt()`
+#' @param nTaxa number of taxa to show before lumping into "Others"
+#' @param taxRank taxonomic rank to aggregate at
+#' @param grouping_vars sample data columns to keep (e.g. for faceting)
+#' @param order_by legend order: "alphabetical" or "abundance"
+#' @param seed random seed for colour assignment
 #' @export
 gen_comm_plot_data <- function(
     melted_ps,

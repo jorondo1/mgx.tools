@@ -6,6 +6,13 @@
 \usage{
 topTaxa(psmelt, taxLvl, topN)
 }
+\arguments{
+\item{psmelt}{melted phyloseq data with a `relAb` column}
+
+\item{taxLvl}{taxonomic rank to aggregate at (e.g. "Genus")}
+
+\item{topN}{number of taxa to keep before lumping into "Others"}
+}
 \description{
 find top N taxa and generate a tibble of taxa with Others category
 }

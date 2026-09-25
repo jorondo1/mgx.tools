@@ -3,7 +3,10 @@
 #' @description
 #' stolen from https://github.com/Russel88/MicEco/blob/master/R/rcurve.R
 #' minor adjustments to transform otu as matrix
-#' 
+#' @param physeq a phyloseq object
+#' @param subsamp sequencing depths at which to compute richness
+#' @param trim drop depths greater than a sample's total count
+#' @param add_sample_data merge sample data into the output
 #' @export
 rcurve <- function (physeq, subsamp = 10^c(1:5), trim = TRUE, add_sample_data = TRUE) {
   message('Not quite efficient, try quickRareCurve() instead !') 

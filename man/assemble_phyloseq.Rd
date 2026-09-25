@@ -17,6 +17,8 @@ assemble_phyloseq(
 )
 }
 \arguments{
+\item{abunTable}{wide tibble with taxonomic ranks and sample IDs as column; one species (or ASV) per row}
+
 \item{sampleData}{data frame with sample data and matching sample IDs as row names}
 
 \item{min_sample_size}{default 100; samples with fewer sequences are discarded}
@@ -29,7 +31,9 @@ assemble_phyloseq(
 
 \item{justBacteria}{default FALSE; filter to keep only bacteria counts}
 
-\item{abundTable}{wide tibble with taxonomic ranks and sample IDs as column; one species (or ASV) per row}
+\item{onlySpecies}{default FALSE; if TRUE, taxonomy table keeps only the `unique_taxa_ID` column}
+
+\item{seqdepth_plot}{default TRUE; plot the per-sample sequence depth histogram}
 }
 \description{
 from a table that contains both taxonomy and sample identifiers in the columns

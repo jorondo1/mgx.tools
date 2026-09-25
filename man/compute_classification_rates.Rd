@@ -9,6 +9,11 @@ compute_classification_rates(
   ranks = c("Phylum", "Class", "Order", "Family", "Genus")
 )
 }
+\arguments{
+\item{ps}{a phyloseq object, or a named list of them (names become the `Dataset` column)}
+
+\item{ranks}{taxonomic ranks to compute classification rates for}
+}
 \description{
 Call the .compute_classrate() function over lists of ps objects if pertinent
 }

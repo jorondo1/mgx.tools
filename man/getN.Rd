@@ -6,6 +6,9 @@
 \usage{
 getN(x)
 }
+\arguments{
+\item{x}{a dada-class or mergePairs object}
+}
 \description{
 Count reads retained in a dada-class or mergePairs object
 }

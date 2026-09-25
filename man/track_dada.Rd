@@ -10,9 +10,25 @@ track_dada(
   sample.names,
   dadaFs,
   dadaRs = NULL,
-  mergers_pooled = mergers_pooled,
-  seqtab.nochim = seqtab.nochim
+  mergers_pooled = NULL,
+  seqtab.nochim = .from_global("seqtab.nochim", "track_dada"),
+  seqtab = .from_global("seqtab", "track_dada")
 )
+}
+\arguments{
+\item{out.N}{`filterAndTrim()` output from the N-removal step}
+
+\item{out}{`filterAndTrim()` output from the quality filtering step}
+
+\item{sample.names}{sample names, in the same order as `out.N`}
+
+\item{dadaFs, dadaRs}{`dada()` outputs for forward and reverse reads (`dadaRs = NULL` for single-end)}
+
+\item{mergers_pooled}{unused; kept for backward compatibility}
+
+\item{seqtab.nochim}{sequence table after chimera removal; defaults to `seqtab.nochim` in the global environment}
+
+\item{seqtab}{sequence table before chimera removal; defaults to `seqtab` in the global environment}
 }
 \description{
 Superseded by \code{log_tracking()} + \code{track_dada2()}, which persist

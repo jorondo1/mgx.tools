@@ -6,6 +6,15 @@
 \usage{
 rcurve(physeq, subsamp = 10^c(1:5), trim = TRUE, add_sample_data = TRUE)
 }
+\arguments{
+\item{physeq}{a phyloseq object}
+
+\item{subsamp}{sequencing depths at which to compute richness}
+
+\item{trim}{drop depths greater than a sample's total count}
+
+\item{add_sample_data}{merge sample data into the output}
+}
 \description{
 stolen from https://github.com/Russel88/MicEco/blob/master/R/rcurve.R
 minor adjustments to transform otu as matrix

@@ -33,8 +33,8 @@ ASV_tree_for_physeq <- function(
 #' Allows coarser-grain taxonomic analyses without losing unidentified ASVs
 #' based on https://github.com/benjjneb/dada2/issues/947
 #' @param physeq a phyloseq object with tree data
-#' @param threshold the phylogenetic distance threshold passed to 
-#' @param export_dir directory where to export dendogram as well as taxonomy-cluster consistency plot
+#' @param hclust.method agglomeration method passed to `stats::hclust()`
+#' @param threshold phylogenetic distance at which to cut the tree into clusters (0.03 = 97\% similarity)
 #' @export
 
 cluster_ASVs_physeq <- function(

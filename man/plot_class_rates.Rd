@@ -6,6 +6,9 @@
 \usage{
 plot_class_rates(classrates)
 }
+\arguments{
+\item{classrates}{output of `compute_classification_rates()`}
+}
 \description{
 Plot classification rates
 }

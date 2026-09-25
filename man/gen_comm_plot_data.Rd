@@ -13,6 +13,19 @@ gen_comm_plot_data(
   seed = 1346134564
 )
 }
+\arguments{
+\item{melted_ps}{output of `phyloseq::psmelt()` or `psflashmelt()`}
+
+\item{nTaxa}{number of taxa to show before lumping into "Others"}
+
+\item{taxRank}{taxonomic rank to aggregate at}
+
+\item{grouping_vars}{sample data columns to keep (e.g. for faceting)}
+
+\item{order_by}{legend order: "alphabetical" or "abundance"}
+
+\item{seed}{random seed for colour assignment}
+}
 \description{
 long df prepared for barchart visualisation of community members
 generates an "others" category for a specified number of taxa

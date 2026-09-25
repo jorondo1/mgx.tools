@@ -6,6 +6,11 @@
 \usage{
 chimera_report(seqtab, seqtab.nochim)
 }
+\arguments{
+\item{seqtab}{sequence table before chimera removal (samples as rows)}
+
+\item{seqtab.nochim}{sequence table after chimera removal}
+}
 \description{
 Report chimera rate and reads
 }

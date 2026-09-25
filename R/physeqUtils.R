@@ -64,6 +64,8 @@ remove_ultra_rare <- function(seqtab, taxonomy, n) {
 
 #' Visualise sequence count distribution across samples
 #' @param seqtab matrix sequence table with samples as rows
+#' @param breaks number of histogram breaks
+#' @param log_count plot log10 of sample counts
 #' @export
 viz_seqdepth <- function(seqtab, breaks = 100, log_count = FALSE) {
   sums <- rowSums(seqtab)

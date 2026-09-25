@@ -1,4 +1,11 @@
 #' Parallelize phyloseq's rarefaction function with reproducible results
+#' @param physeq a phyloseq object
+#' @param sample.size depth to rarefy to; samples below it are dropped
+#' @param rngseed numeric seed for reproducible subsampling, or FALSE
+#' @param replace subsample with replacement
+#' @param trimOTUs remove taxa with zero counts after rarefying
+#' @param verbose print messages
+#' @param ncores number of cores to use
 #' @import foreach
 #' @importFrom doParallel registerDoParallel
 #' @importFrom doRNG %dorng%

@@ -7,7 +7,7 @@
 diversity_tibble(ps)
 }
 \arguments{
-\item{physeq}{a phyloseq object}
+\item{ps}{a phyloseq object}
 }
 \description{
 Takes a phyloseq object as input and creates a tibble containing all the sample data and one column per index.
